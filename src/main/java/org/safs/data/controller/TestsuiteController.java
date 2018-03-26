@@ -74,6 +74,7 @@ public class TestsuiteController implements Verifier<Testsuite> {
 		verifyDependenciesExist(body);
 
 		Testsuite testsuite = testsuiteRepository.save(body);
+		log.debug("testsuite has been created in the repository.");
 		return new ResponseEntity<>(assembler.toResource(testsuite), HttpStatus.CREATED);
 	}
 

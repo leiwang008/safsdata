@@ -76,6 +76,7 @@ public class TeststepController implements Verifier<Teststep>{
 		verifyDependenciesExist(body);
 
 		Teststep item = teststepRepository.save(body);
+		log.debug("teststep has been created in the repository.");
 		return ResponseEntity.status(HttpStatus.CREATED).body(assembler.toResource(item));
 	}
 

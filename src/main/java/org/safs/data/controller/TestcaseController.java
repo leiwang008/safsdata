@@ -78,6 +78,7 @@ public class TestcaseController implements Verifier<Testcase>{
 		verifyDependenciesExist(body);
 
 		Testcase cc = testcaseRepository.save(body);
+		log.debug("testcase has been created in the repository.");
 		return new ResponseEntity<>(assembler.toResource(cc), HttpStatus.CREATED);
 	}
 
