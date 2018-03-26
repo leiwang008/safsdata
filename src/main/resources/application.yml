@@ -1,0 +1,34 @@
+#the settings for 'server' only work for embedded Tomcat when we run this application with a jar file
+#if we package this application into a war file and deploy it into an external servlet container, these settings (Here) for 'server' will not work. 
+server:
+  servlet:
+    #define the root path for this web application
+    context-path: /safsdata
+
+#we have defined 2 log profiles 'dev' and 'prod' in the logback-spring.xml
+#here we make the profile 'dev' active
+spring:
+  profiles:
+    active: dev
+#==== connect to mysql ======#
+  jpa:
+    hibernate:
+      #ddl-auto can be none, validate, update, create, and create-drop
+      #use "create" or "create-drop" will initialize tables from script "import.sql"
+      ddl-auto: create-drop
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL5Dialect
+  datasource:
+    url: jdbc:mysql://localhost:3306/safsdata?useSSL=false
+    username: root
+    password:
+    driver-class-name: com.mysql.jdbc.Driver
+  mvc:
+    view:
+      prefix: /WEB-INF/jsp/
+      suffix: .jsp
+
+#define the log level for different package, define the log file
+logging:
+  file: safsdata_debug.log

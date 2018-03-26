@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- https://docs.spring.io/spring-boot/docs/current/reference/html/howto-logging.html to understand log in spring boot -->
+<!-- https://lankydanblog.com/2017/08/31/configuring-logback-with-spring-boot/ is an easy tutorial to understand logback configuration -->
+<configuration>
+    <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
+    <property name="LOG_FILE" value="${LOG_FILE:-${LOG_PATH:-${LOG_TEMP:-${java.io.tmpdir:-/tmp}}/}spring.log}"/>
+
+    <springProfile name="dev">
+        <include resource="org/springframework/boot/logging/logback/console-appender.xml"/>
+        <appender name="ROLLING-FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+            <encoder>
+                <pattern>${FILE_LOG_PATTERN}</pattern>
+            </encoder>
+            <file>${LOG_FILE}</file>
+            <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+                <!-- daily rollover -->
+                <fileNamePattern>${LOG_FILE}.%d{yyyy-MM-dd}.log</fileNamePattern>
+                <!-- keep 30 days' worth of history -->
+    			<maxHistory>30</maxHistory> 
+            </rollingPolicy>
+        </appender>
+        <!-- We can define log level for a specific package, class etc. -->
+        <!-- Without additivity="false", the log message will be wrote twice -->
+        <!-- logger name="org.springframework" additivity="false" level="error">
+            <appender-ref ref="CONSOLE"/>
+            <appender-ref ref="ROLLING-FILE"/>
+		</logger -->
+		<!-- without defining appender, the root appender will write the log messages -->
+        <logger name="org.springframework" level="error"/>
+        <logger name="org.springframework.web" level="error"/>
+        <logger name="org.springframework.data" level="error"/>
+        <logger name="org.hibernate.SQL" level="debug"/>
+        <logger name="org.safs" level="debug"/>
+		
+        <root level="error">
+            <appender-ref ref="CONSOLE"/>
+            <appender-ref ref="ROLLING-FILE"/>
+        </root>
+    </springProfile>
+
+    <springProfile name="prod">
+        <appender name="ROLLING-FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+            <encoder>
+                <pattern>${FILE_LOG_PATTERN}</pattern>
+            </encoder>
+            <file>${LOG_FILE}</file>
+            <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+                <fileNamePattern>${LOG_FILE}.%d{yyyy-MM-dd}.%i.gz</fileNamePattern>
+                <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                    <maxFileSize>10MB</maxFileSize>
+                </timeBasedFileNamingAndTriggeringPolicy>
+            </rollingPolicy>
+        </appender>
+
+        <root level="ERROR">
+            <appender-ref ref="ROLLING-FILE"/>
+        </root>
+    </springProfile>
+
+</configuration>
