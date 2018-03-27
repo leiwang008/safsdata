@@ -93,11 +93,13 @@ create table if not exists status (
 );
 
 /**
- * 'testsuite' contains 'testcase', which contains 'teststep'
+ * 'testcycle' contains 'testsuite'
+ * 'testsuite' contains 'testcase'
+ * 'testcase' contains 'teststep'
  * 
  * For now, I will just ignore those foreign keys ('orderable_id', 'framework_id' etc.) and start the work, we can add them later
  */
-create table if not exists testsuite (
+create table if not exists testcycle (
 	id int not null auto_increment,
 /*	orderable_id int,
 	framework_id int,
@@ -109,8 +111,8 @@ create table if not exists testsuite (
 	tests int not null,
 	failures int not null,
 	skipped int,
-	time double not null, /* it is how long it gets all testcases done, in millisecond? */
-	timestamp datetime, /* it is when this testsuite starts? */
+	time double not null, /* it is how long it gets all testsuites done, in millisecond? */
+	timestamp datetime, /* it is when this testsuites starts? */
 	
 	command_line varchar(500),
 	
@@ -121,6 +123,27 @@ create table if not exists testsuite (
 	foreign key (engine_id) references engine(id),
 	foreign key (user_id) references user(id),
 	foreign key (machine_id) references machine(id)
+	*/
+);
+
+/**
+ * 'testsuite' contains 'testcase' which contains 'teststep'
+ * 
+ */
+create table if not exists testsuite (
+	id int not null auto_increment,
+/*	testcycle_id int,
+	*/
+	name varchar(100) not null,
+	tests int not null,
+	failures int not null,
+	skipped int,
+	time double not null, /* it is how long it gets all testcases done, in millisecond? */
+	timestamp datetime, /* it is when this testsuite starts? */
+	
+	primary key(id)
+/*	primary key(id),
+	foreign key (testcycle_id) references testcycle(id)
 	*/
 );
 
