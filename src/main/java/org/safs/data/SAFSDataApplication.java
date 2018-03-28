@@ -1,17 +1,23 @@
 //From https://dzone.com/articles/creating-a-rest-api-with-java-and-spring
-
+/**
+ * History:
+ * WangLei 28 MAR, 2018	Modified method demo(): print the data from repository in a general way.
+ */
 package org.safs.data;
 
-import org.safs.data.model.Status;
-import org.safs.data.model.Testcase;
-import org.safs.data.model.Teststep;
-import org.safs.data.model.Testsuite;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.safs.data.repository.MachineRepository;
 import org.safs.data.repository.StatusRepository;
 import org.safs.data.repository.TestcaseRepository;
+import org.safs.data.repository.TestcycleRepository;
 import org.safs.data.repository.TeststepRepository;
 import org.safs.data.repository.TestsuiteRepository;
+import org.safs.data.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -20,6 +26,7 @@ import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.data.repository.CrudRepository;
 import org.springframework.hateoas.config.EnableEntityLinks;
 import org.springframework.hateoas.config.EnableHypermediaSupport;
 import org.springframework.hateoas.config.EnableHypermediaSupport.HypermediaType;
@@ -42,39 +49,47 @@ public class SAFSDataApplication extends SpringBootServletInitializer {
 		SpringApplication.run(SAFSDataApplication.class, args);
 	}
 
+	@Autowired
+	private MachineRepository machineRep;
+	@Autowired
+	private UserRepository userRep;
+	@Autowired
+	private StatusRepository statusRep;
+	@Autowired
+	private TestcycleRepository testcycleRep;
+	@Autowired
+	private TestsuiteRepository testsuiteRep;
+	@Autowired
+	private TestcaseRepository testcaseRep;
+	@Autowired
+	private TeststepRepository teststepRep;
+
 	@Bean
-	public CommandLineRunner demo(StatusRepository statusRep,
-			                      TestcaseRepository testcaseRep,
-			                      TeststepRepository teststepRep,
-			                      TestsuiteRepository testsuiteRep){
+	public CommandLineRunner demo(){
+
+		List<CrudRepository> repositories = new ArrayList<CrudRepository>();
+		repositories.add(machineRep);
+		repositories.add(userRep);
+		repositories.add(statusRep);
+		repositories.add(testcycleRep);
+		repositories.add(testsuiteRep);
+		repositories.add(testcaseRep);
+		repositories.add(teststepRep);
+
 		return (args) -> {
-			if(statusRep.count()>0){
-				log.debug("======================StatusRepository Data=========================");
-				for(Status i: statusRep.findAll()){
-					log.debug(i.toString());
+			if(log.isDebugEnabled()){
+				for(CrudRepository repo: repositories){
+					if(repo.count()>0){
+//						Proxy.getInvocationHandler(repo);
+						//repo is a proxy class, repo.getClass().getName() will not give the real class name
+						log.debug("======================"+repo.getClass().getName()+" Data=========================");
+						for(Object i: repo.findAll()){
+							log.debug(i.toString());
+						}
+						log.debug("============================================================");
+					}
 				}
-				log.debug("============================================================");
-			}
-			if(testsuiteRep.count()>0){
-				log.debug("======================TestsuiteRepository Data=========================");
-				for(Testsuite i: testsuiteRep.findAll()){
-					log.debug(i.toString());
-				}
-				log.debug("============================================================");
-			}
-			if(testcaseRep.count()>0){
-				log.debug("======================TestcaseRepository Data==========================");
-				for(Testcase i: testcaseRep.findAll()){
-					log.debug(i.toString());
-				}
-				log.debug("============================================================");
-			}
-			if(teststepRep.count()>0){
-				log.debug("======================TeststepRepository Data=============================");
-				for(Teststep i: teststepRep.findAll()){
-					log.debug(i.toString());
-				}
-				log.debug("============================================================");
+
 			}
 		};
 	}

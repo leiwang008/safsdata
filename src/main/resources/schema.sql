@@ -132,8 +132,7 @@ create table if not exists testcycle (
  */
 create table if not exists testsuite (
 	id int not null auto_increment,
-/*	testcycle_id int,
-	*/
+    testcycle_id int,
 	name varchar(100) not null,
 	tests int not null,
 	failures int not null,
@@ -141,10 +140,8 @@ create table if not exists testsuite (
 	time double not null, /* it is how long it gets all testcases done, in millisecond? */
 	timestamp datetime, /* it is when this testsuite starts? */
 	
-	primary key(id)
-/*	primary key(id),
+	primary key(id),
 	foreign key (testcycle_id) references testcycle(id)
-	*/
 );
 
 create table if not exists testcase (

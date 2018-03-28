@@ -24,15 +24,13 @@ import javax.persistence.Id;
  *
  */
 @Entity
-public class Testsuite extends UpdatableDefault<Testsuite>{
+public class Testcycle extends UpdatableDefault<Testcycle>{
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long id;
-////	@ManyToOne(fetch=FetchType.LAZY)
-//	//Caused by: org.hibernate.LazyInitializationException: could not initialize proxy - no Session
-//	@ManyToOne(fetch=FetchType.EAGER)
-//	private Testcycle testcycle;
-	private Long testcycleId;
+//	//mappedBy="testcycle" will create a 'testcycle_id' references testcycle (id) in the Testsuite table.
+//	@OneToMany(fetch=FetchType.EAGER, cascade=CascadeType.ALL, mappedBy="testcycle")
+//	private List<Testsuite> testsuites;
 
 	private String name;
 	private int tests;
@@ -40,6 +38,7 @@ public class Testsuite extends UpdatableDefault<Testsuite>{
 	private int skipped;
 	private double time;
 	private Date timestamp;
+	private String commandLine;
 
 	public Long getId() {
 		return id;
@@ -132,32 +131,32 @@ public class Testsuite extends UpdatableDefault<Testsuite>{
 	public void setTimestamp(Date timestampe) {
 		this.timestamp = timestampe;
 	}
-
 	/**
-	 * @return the testcycleId
+	 * @return the commandLine
 	 */
-	public Long getTestcycleId() {
-		return testcycleId;
+	public String getCommandLine() {
+		return commandLine;
 	}
 
 	/**
-	 * @param testcycleId the testcycleId to set
+	 * @param commandLine the commandLine to set
 	 */
-	public void setTestcycleId(Long testcycleId) {
-		this.testcycleId = testcycleId;
+	public void setCommandLine(String commandLine) {
+		this.commandLine = commandLine;
 	}
 
 //	/**
-//	 * @return the testcycle
+//	 * @return the testsuites
 //	 */
-//	public Testcycle getTestcycle() {
-//		return testcycle;
+//	public List<Testsuite> getTestsuites() {
+//		return testsuites;
 //	}
 //
 //	/**
-//	 * @param testcycle the testcycle to set
+//	 * @param testsuites the testsuites to set
 //	 */
-//	public void setTestcycle(Testcycle testcycle) {
-//		this.testcycle = testcycle;
+//	public void setTestsuites(List<Testsuite> testsuites) {
+//		this.testsuites = testsuites;
 //	}
+
 }

@@ -11,8 +11,12 @@
  */
 package org.safs.data.repository;
 
+import java.util.List;
+
 import org.safs.data.model.Testsuite;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -21,4 +25,9 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface TestsuiteRepository extends CrudRepository<Testsuite, Long>{
+	@Query("delete from Testsuite i where i.testcycleId=:testcycleId")
+	public boolean deleteByTestcycleId(@Param("testcycleId") Long testcycleId);
+
+	@Query("select i from Testsuite i where i.testcycleId=:testcycleId")
+	public List<Testsuite> findAllByTestcycleId(@Param("testcycleId") Long testcycleId);
 }

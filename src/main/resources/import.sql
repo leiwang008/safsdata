@@ -16,8 +16,9 @@ insert into status(type, description) values ('4096', 'WARNING');
 insert into status(type, description) values ('4097', 'WARNING_OK');
 insert into status(type, description) values ('10000', 'CUSTOM');
 
+insert into testcycle(name, tests, failures, skipped, time, timestamp, command_line) values ('VA Test', 10, 2, 1, 2560, '2018-02-22T09:39:15', '"c:\\seleniumplus\\Java\\jre\\bin\\java.exe"  -cp "c:\\seleniumplus\\libs\\seleniumplus.jar;c:\\seleniumplus\\libs\\JSTAFEmbedded.jar;c:\\seleniumplus\\libs\\selenium-server-standalone-3.4.0.jar";bin org.sas.VATest');
 
-insert into testsuite(name, tests, failures, skipped, time, timestamp, command_line) values ('VA Test', 10, 2, 1, 2560, '2018-02-22T09:39:15', '"c:\\seleniumplus\\Java\\jre\\bin\\java.exe"  -cp "c:\\seleniumplus\\libs\\seleniumplus.jar;c:\\seleniumplus\\libs\\JSTAFEmbedded.jar;c:\\seleniumplus\\libs\\selenium-server-standalone-3.4.0.jar";bin org.sas.VATest');
+insert into testsuite(testcycle_id, name, tests, failures, skipped, time, timestamp) values (1, 'VA Test Suite1', 10, 2, 1, 2560, '2018-02-22T09:39:15');
 
 
 insert into testcase(testsuite_id, name, time) values (1, 'VA Login', 1000);

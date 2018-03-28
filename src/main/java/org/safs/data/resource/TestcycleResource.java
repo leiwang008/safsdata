@@ -13,23 +13,24 @@ package org.safs.data.resource;
 
 import java.util.Date;
 
-import org.safs.data.model.Testsuite;
+import org.safs.data.model.Testcycle;
 
 /**
  * @author Lei Wang
  *
  */
-public class TestsuiteResource extends UpdatableDefaultForResource<Testsuite>{
+public class TestcycleResource extends UpdatableDefaultForResource<Testcycle>{
 	private Long id;
-	private Long testcycleId;
+//	private List<Testsuite> testsuites;
 	private String name;
 	private int tests;
 	private int failures;
 	private int skipped;
 	private double time;
 	private Date timestamp;
+	private String commandLine;
 
-	public TestsuiteResource(Testsuite o){
+	public TestcycleResource(Testcycle o){
 		update(o);
 	}
 
@@ -40,12 +41,12 @@ public class TestsuiteResource extends UpdatableDefaultForResource<Testsuite>{
 		return id;
 	}
 
-	/**
-	 * @return the testcycleId
-	 */
-	public Long getTestcycleId() {
-		return testcycleId;
-	}
+//	/**
+//	 * @return the testsuites
+//	 */
+//	public List<Testsuite> getTestsuites() {
+//		return testsuites;
+//	}
 
 	/**
 	 * @return the name
@@ -87,5 +88,12 @@ public class TestsuiteResource extends UpdatableDefaultForResource<Testsuite>{
 	 */
 	public Date getTimestamp() {
 		return timestamp;
+	}
+
+	/**
+	 * @return the commandLine
+	 */
+	public String getCommandLine() {
+		return commandLine;
 	}
 }

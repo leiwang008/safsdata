@@ -18,6 +18,7 @@ import java.util.List;
 import org.safs.data.model.Machine;
 import org.safs.data.model.Status;
 import org.safs.data.model.Testcase;
+import org.safs.data.model.Testcycle;
 import org.safs.data.model.Teststep;
 import org.safs.data.model.Testsuite;
 import org.safs.data.model.User;
@@ -47,12 +48,13 @@ public class ExposedRestAPIController {
 	public ResponseEntity<Collection<ExposedRestAPI>> findAll(){
 		List<ExposedRestAPI> exposedAPI = new ArrayList<ExposedRestAPI>();
 
-		exposedAPI.add(new ExposedRestAPI(Testcase.class.getSimpleName(), entityLinks.linkFor(Testcase.class).withSelfRel().getHref()));
-		exposedAPI.add(new ExposedRestAPI(Status.class.getSimpleName(), entityLinks.linkFor(Status.class).withSelfRel().getHref()));
-		exposedAPI.add(new ExposedRestAPI(Testsuite.class.getSimpleName(), entityLinks.linkFor(Testsuite.class).withSelfRel().getHref()));
-		exposedAPI.add(new ExposedRestAPI(Teststep.class.getSimpleName(), entityLinks.linkFor(Teststep.class).withSelfRel().getHref()));
 		exposedAPI.add(new ExposedRestAPI(Machine.class.getSimpleName(), entityLinks.linkFor(Machine.class).withSelfRel().getHref()));
 		exposedAPI.add(new ExposedRestAPI(User.class.getSimpleName(), entityLinks.linkFor(User.class).withSelfRel().getHref()));
+		exposedAPI.add(new ExposedRestAPI(Testcycle.class.getSimpleName(), entityLinks.linkFor(Testcycle.class).withSelfRel().getHref()));
+		exposedAPI.add(new ExposedRestAPI(Testsuite.class.getSimpleName(), entityLinks.linkFor(Testsuite.class).withSelfRel().getHref()));
+		exposedAPI.add(new ExposedRestAPI(Testcase.class.getSimpleName(), entityLinks.linkFor(Testcase.class).withSelfRel().getHref()));
+		exposedAPI.add(new ExposedRestAPI(Teststep.class.getSimpleName(), entityLinks.linkFor(Teststep.class).withSelfRel().getHref()));
+		exposedAPI.add(new ExposedRestAPI(Status.class.getSimpleName(), entityLinks.linkFor(Status.class).withSelfRel().getHref()));
 
 		return new ResponseEntity<>(exposedAPI, HttpStatus.OK);
 	}

@@ -29,10 +29,13 @@
         <logger name="org.springframework" level="error"/>
         <logger name="org.springframework.web" level="error"/>
         <logger name="org.springframework.data" level="error"/>
-        <logger name="org.hibernate.SQL" level="debug"/>
+        <logger name="org.apache" level="error"/>
+        <logger name="com.zaxxer" level="error"/>
+        <logger name="org.hibernate" level="error"/>
+        <logger name="org.hibernate.SQL" level="error"/>
         <logger name="org.safs" level="debug"/>
 		
-        <root level="error">
+        <root level="debug">
             <appender-ref ref="CONSOLE"/>
             <appender-ref ref="ROLLING-FILE"/>
         </root>
