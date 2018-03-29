@@ -8,6 +8,9 @@
  *
  * History:
  * @date 2018-03-06    (Lei Wang) Initial release.
+ * @date 2018-03-29    (Lei Wang) Modified the path to plural (teststep -> teststeps).
+ *                                Added more get request matching "/teststeps/testcase/{id}",
+ *                                "/teststeps/status/{id}" and "/teststeps/testcase/{tcId}/status/{sId}".
  */
 package org.safs.data.controller;
 
@@ -50,7 +53,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @Controller
 //@ResponseBody
 @ExposesResourceFor(Teststep.class)
-@RequestMapping(value="/teststep", produces=MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value="/teststeps", produces=MediaType.APPLICATION_JSON_VALUE)
 public class TeststepController implements Verifier<Teststep>{
 	private static final Logger log = LoggerFactory.getLogger(TeststepController.class);
 
@@ -64,9 +67,53 @@ public class TeststepController implements Verifier<Teststep>{
 	@Autowired
 	TeststepResourceAssembler assembler;
 
+	@GetMapping(value="/{id}")
+	public ResponseEntity<TeststepResource> find(@PathVariable Long id){
+		Optional<Teststep> entity = teststepRepository.findById(id);
+		try{
+			return ResponseEntity.status(HttpStatus.OK).body(assembler.toResource(entity.get()));
+		}catch(NoSuchElementException e){
+			throw new RestException("Failed to find teststep by id '"+id+"'", HttpStatus.NOT_FOUND);
+		}
+	}
+
 	@GetMapping
 	public ResponseEntity<Collection<TeststepResource>> findAll(){
 		Iterable<Teststep> entities = teststepRepository.findAll();
+		return new ResponseEntity<>( assembler.toResourceCollection(entities), HttpStatus.OK);
+	}
+
+	/**
+	 * Get all the teststeps according to the testcase's id.
+	 * @param id Long, the test case's id.
+	 * @return
+	 */
+	@GetMapping(value="/testcase/{id}")
+	public ResponseEntity<Collection<TeststepResource>> findAllByTestcaseId(@PathVariable Long id){
+		Iterable<Teststep> entities = teststepRepository.findAllByTestcaseId(id);
+		return new ResponseEntity<>( assembler.toResourceCollection(entities), HttpStatus.OK);
+	}
+
+	/**
+	 * Get all the teststeps according to the status id.
+	 * @param id Long, the status id.
+	 * @return
+	 */
+	@GetMapping(value="/status/{id}")
+	public ResponseEntity<Collection<TeststepResource>> findAllByStatusId(@PathVariable Long id){
+		Iterable<Teststep> entities = teststepRepository.findAllByStatusId(id);
+		return new ResponseEntity<>( assembler.toResourceCollection(entities), HttpStatus.OK);
+	}
+
+	/**
+	 * Get all the teststeps according to the testcase's id and status id.
+	 * @param tcId Long, the test case's id.
+	 * @param sId Long, the status id.
+	 * @return
+	 */
+	@GetMapping(value="/testcase/{tcId}/status/{sId}")
+	public ResponseEntity<Collection<TeststepResource>> findAllByTestcaseId(@PathVariable Long tcId, @PathVariable Long sId){
+		Iterable<Teststep> entities = teststepRepository.findAllByTestcaseIdAndStatusId(tcId, sId);
 		return new ResponseEntity<>( assembler.toResourceCollection(entities), HttpStatus.OK);
 	}
 
@@ -78,16 +125,6 @@ public class TeststepController implements Verifier<Teststep>{
 		Teststep item = teststepRepository.save(body);
 		log.debug("teststep has been created in the repository.");
 		return ResponseEntity.status(HttpStatus.CREATED).body(assembler.toResource(item));
-	}
-
-	@GetMapping(value="/{id}")
-	public ResponseEntity<TeststepResource> find(@PathVariable Long id){
-		Optional<Teststep> entity = teststepRepository.findById(id);
-		try{
-			return ResponseEntity.status(HttpStatus.OK).body(assembler.toResource(entity.get()));
-		}catch(NoSuchElementException e){
-			throw new RestException("Failed to find teststep by id '"+id+"'", HttpStatus.NOT_FOUND);
-		}
 	}
 
 	@DeleteMapping(value="/{id}")

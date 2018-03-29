@@ -54,7 +54,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 //@ResponseBody
 @ExposesResourceFor(Status.class)
 //If we don't use below RequestMapping, EntityLinks will not consider "/status" as link for class 'Status'
-@RequestMapping(value="/status", produces=MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value="/statuses", produces=MediaType.APPLICATION_JSON_VALUE)
 public class StatusController implements Verifier<Status> {
 	private static final Logger log = LoggerFactory.getLogger(StatusController.class);
 

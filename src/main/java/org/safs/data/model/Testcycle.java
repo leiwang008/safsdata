@@ -38,111 +38,90 @@ public class Testcycle extends UpdatableDefault<Testcycle>{
 	private int skipped;
 	private double time;
 	private Date timestamp;
-	private String commandLine;
 
+	/**
+	 * @return the id
+	 */
 	public Long getId() {
 		return id;
 	}
-
+	/**
+	 * @param id the id to set
+	 */
 	public void setId(Long id) {
 		this.id = id;
 	}
-
-    /**
+	/**
 	 * @return the name
 	 */
 	public String getName() {
 		return name;
 	}
-
 	/**
 	 * @param name the name to set
 	 */
 	public void setName(String name) {
 		this.name = name;
 	}
-
 	/**
 	 * @return the tests
 	 */
 	public int getTests() {
 		return tests;
 	}
-
 	/**
 	 * @param tests the tests to set
 	 */
 	public void setTests(int tests) {
 		this.tests = tests;
 	}
-
 	/**
 	 * @return the failures
 	 */
 	public int getFailures() {
 		return failures;
 	}
-
 	/**
 	 * @param failures the failures to set
 	 */
 	public void setFailures(int failures) {
 		this.failures = failures;
 	}
-
 	/**
 	 * @return the skipped
 	 */
 	public int getSkipped() {
 		return skipped;
 	}
-
 	/**
 	 * @param skipped the skipped to set
 	 */
 	public void setSkipped(int skipped) {
 		this.skipped = skipped;
 	}
-
 	/**
 	 * @return the time
 	 */
 	public double getTime() {
 		return time;
 	}
-
 	/**
 	 * @param time the time to set
 	 */
 	public void setTime(double time) {
 		this.time = time;
 	}
-
 	/**
 	 * @return the timestamp
 	 */
 	public Date getTimestamp() {
 		return timestamp;
 	}
-
 	/**
-	 * @param timestampe the timestamp to set
+	 * @param timestamp the timestamp to set
 	 */
-	public void setTimestamp(Date timestampe) {
-		this.timestamp = timestampe;
-	}
-	/**
-	 * @return the commandLine
-	 */
-	public String getCommandLine() {
-		return commandLine;
-	}
-
-	/**
-	 * @param commandLine the commandLine to set
-	 */
-	public void setCommandLine(String commandLine) {
-		this.commandLine = commandLine;
+	public void setTimestamp(Date timestamp) {
+		this.timestamp = timestamp;
 	}
 
 //	/**
@@ -151,7 +130,6 @@ public class Testcycle extends UpdatableDefault<Testcycle>{
 //	public List<Testsuite> getTestsuites() {
 //		return testsuites;
 //	}
-//
 //	/**
 //	 * @param testsuites the testsuites to set
 //	 */

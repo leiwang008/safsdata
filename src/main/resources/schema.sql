@@ -11,6 +11,7 @@ drop table if exists framework;
 drop table if exists orderable;
 drop table if exists machine;
 drop table if exists user;
+drop table if exists usage;
 
 create table if not exists user (
 	/*id int not null auto_increment,*/
@@ -92,6 +93,24 @@ create table if not exists status (
 	primary key(id)
 );
 
+create table if not exists usage (
+	id int not null auto_increment,
+	orderable_id int,
+	framework_id int,
+	engine_id int,
+	user_id varchar,
+	machine_id int,
+	timestamp datetime, /* it is when this testcycle starts? */	
+	command_line varchar(500),
+	
+	primary key(id),
+	foreign key (orderable_id) references orderable(id),
+	foreign key (framework_id) references framework(id),
+	foreign key (engine_id) references engine(id),
+	foreign key (user_id) references user(id),
+	foreign key (machine_id) references machine(id)
+);
+
 /**
  * 'testcycle' contains 'testsuite'
  * 'testsuite' contains 'testcase'
@@ -106,15 +125,14 @@ create table if not exists testcycle (
 	engine_id int,
 	user_id varchar,
 	machine_id int,
+	command_line varchar(500),
 	*/
 	name varchar(100) not null,
 	tests int not null,
 	failures int not null,
 	skipped int,
 	time double not null, /* it is how long it gets all testsuites done, in millisecond? */
-	timestamp datetime, /* it is when this testsuites starts? */
-	
-	command_line varchar(500),
+	timestamp datetime, /* it is when this testcycle starts? */
 	
 	primary key(id)
 /*	primary key(id),

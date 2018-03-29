@@ -45,7 +45,7 @@ import org.springframework.web.bind.annotation.RestController;
 @CrossOrigin(origins="*")
 @RestController
 @ExposesResourceFor(Machine.class)
-@RequestMapping(value="machine", produces=MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value="machines", produces=MediaType.APPLICATION_JSON_VALUE)
 public class MachineController implements Verifier<Machine>{
 	private static final Logger log = LoggerFactory.getLogger(MachineController.class);
 

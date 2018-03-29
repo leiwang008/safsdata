@@ -51,7 +51,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @Controller
 //@ResponseBody
 @ExposesResourceFor(Testsuite.class)
-@RequestMapping(value="/testsuite", produces=MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value="/testsuites", produces=MediaType.APPLICATION_JSON_VALUE)
 public class TestsuiteController implements Verifier<Testsuite> {
 	private static final Logger log = LoggerFactory.getLogger(TestsuiteController.class);
 

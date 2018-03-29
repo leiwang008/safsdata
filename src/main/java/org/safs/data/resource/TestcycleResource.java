@@ -28,7 +28,6 @@ public class TestcycleResource extends UpdatableDefaultForResource<Testcycle>{
 	private int skipped;
 	private double time;
 	private Date timestamp;
-	private String commandLine;
 
 	public TestcycleResource(Testcycle o){
 		update(o);
@@ -88,12 +87,5 @@ public class TestcycleResource extends UpdatableDefaultForResource<Testcycle>{
 	 */
 	public Date getTimestamp() {
 		return timestamp;
-	}
-
-	/**
-	 * @return the commandLine
-	 */
-	public String getCommandLine() {
-		return commandLine;
 	}
 }

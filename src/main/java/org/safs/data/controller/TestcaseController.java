@@ -52,7 +52,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @Controller
 //@ResponseBody
 @ExposesResourceFor(Testcase.class)
-@RequestMapping(value="/testcase", produces=MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value="/testcases", produces=MediaType.APPLICATION_JSON_VALUE)
 public class TestcaseController implements Verifier<Testcase>{
 	private static final Logger log = LoggerFactory.getLogger(TestcaseController.class);
 
@@ -71,6 +71,12 @@ public class TestcaseController implements Verifier<Testcase>{
 		Iterable<Testcase> elements = testcaseRepository.findAll();
 		Collection<TestcaseResource> f = assembler.toResourceCollection(elements);
 		return new ResponseEntity<>(f, HttpStatus.OK);
+	}
+
+	@GetMapping(value="/testsuite/{suiteId}")
+	public ResponseEntity<Collection<TestcaseResource>> findAllBytestsuiteId(@PathVariable Long suiteId){
+		Collection<Testcase> c = testcaseRepository.findAllBytestsuiteId(suiteId);
+		return new ResponseEntity<>(assembler.toResourceCollection(c), HttpStatus.OK);
 	}
 
 	@PostMapping(consumes=MediaType.APPLICATION_JSON_VALUE)

@@ -35,4 +35,6 @@ public interface TeststepRepository extends CrudRepository<Teststep, Long>{
 	public List<Teststep> findAllByTestcaseId(@Param("testcaseId") Long testcaseId);
 	@Query("select i from Teststep i where i.statusId=:statusId")
 	public List<Teststep> findAllByStatusId(@Param("statusId") Long statusId);
+	@Query("select i from Teststep i where i.testcaseId=:testcaseId and i.statusId=:statusId")
+	public List<Teststep> findAllByTestcaseIdAndStatusId(@Param("testcaseId") Long testcaseId, @Param("statusId") Long statusId);
 }

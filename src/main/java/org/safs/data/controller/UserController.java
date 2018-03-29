@@ -44,7 +44,7 @@ import org.springframework.web.bind.annotation.RestController;
 @CrossOrigin(origins="*")
 @RestController
 @ExposesResourceFor(User.class)
-@RequestMapping(value="user", produces=MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value="users", produces=MediaType.APPLICATION_JSON_VALUE)
 public class UserController implements Verifier<User>{
 	private static final Logger log = LoggerFactory.getLogger(UserController.class);
 
