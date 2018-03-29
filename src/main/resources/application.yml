@@ -31,4 +31,4 @@ spring:
 
 #define the log level for different package, define the log file
 logging:
-  file: safsdata_debug.log
+  file: logs/safsdata_debug.log
