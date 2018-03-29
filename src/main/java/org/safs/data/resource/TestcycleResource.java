@@ -22,6 +22,7 @@ import org.safs.data.model.Testcycle;
 public class TestcycleResource extends UpdatableDefaultForResource<Testcycle>{
 	private Long id;
 //	private List<Testsuite> testsuites;
+	private Long orderableId;
 	private String name;
 	private int tests;
 	private int failures;
@@ -39,19 +40,23 @@ public class TestcycleResource extends UpdatableDefaultForResource<Testcycle>{
 	public Long getId() {
 		return id;
 	}
-
 //	/**
 //	 * @return the testsuites
 //	 */
 //	public List<Testsuite> getTestsuites() {
 //		return testsuites;
 //	}
-
 	/**
 	 * @return the name
 	 */
 	public String getName() {
 		return name;
+	}
+	/**
+	 * @return the orderableId
+	 */
+	public Long getOrderableId() {
+		return orderableId;
 	}
 
 	/**

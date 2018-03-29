@@ -31,7 +31,7 @@ public class Testcycle extends UpdatableDefault<Testcycle>{
 //	//mappedBy="testcycle" will create a 'testcycle_id' references testcycle (id) in the Testsuite table.
 //	@OneToMany(fetch=FetchType.EAGER, cascade=CascadeType.ALL, mappedBy="testcycle")
 //	private List<Testsuite> testsuites;
-
+	private Long orderableId;
 	private String name;
 	private int tests;
 	private int failures;
@@ -50,6 +50,18 @@ public class Testcycle extends UpdatableDefault<Testcycle>{
 	 */
 	public void setId(Long id) {
 		this.id = id;
+	}
+	/**
+	 * @return the orderableId
+	 */
+	public Long getOrderableId() {
+		return orderableId;
+	}
+	/**
+	 * @param orderableId the orderableId to set
+	 */
+	public void setOrderableId(Long orderableId) {
+		this.orderableId = orderableId;
 	}
 	/**
 	 * @return the name

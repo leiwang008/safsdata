@@ -13,6 +13,9 @@ drop table if exists machine;
 drop table if exists user;
 drop table if exists usage;
 
+/**
+ * 'user' will be refered in table 'usage'.
+ */
 create table if not exists user (
 	/*id int not null auto_increment,*/
 	id varchar(20) not null,/*SAS user ID*/
@@ -24,6 +27,7 @@ create table if not exists user (
 
 /**
  * Machine information will be captured when running SAFS Test and will be sent to SAFS Data Service
+ * 'machine' will be refered in table 'usage'.
  */
 create table if not exists machine (
 	id int not null auto_increment,
@@ -35,20 +39,8 @@ create table if not exists machine (
 );
 
 /**
- * This might be something that user create/modify/delete from the page. We can provide a page for that purpose.
- */
-create table if not exists orderable (
-	id int not null auto_increment,
-	product_name varchar(200) not null,
-	platform varchar(200),
-	track varchar(200),
-	branch varchar(200),
-	
-	primary key(id)
-);
-
-/**
- * the pair (name, version) should be unique
+ * The pair (name, version) should be unique.
+ * 'framework' will be refered in table 'usage'.
  */
 create table if not exists framework (
 	id int not null auto_increment,
@@ -60,7 +52,8 @@ create table if not exists framework (
 );
 
 /**
- * the pair (name, version) should be unique
+ * The pair (name, version) should be unique
+ * 'engine' will be refered in table 'usage'.
  */
 create table if not exists engine (
 	id int not null auto_increment,
@@ -93,22 +86,37 @@ create table if not exists status (
 	primary key(id)
 );
 
+/**
+ * This table will track down use of SAFS, SeleniumPlus etc.
+ */
 create table if not exists usage (
 	id int not null auto_increment,
-	orderable_id int,
 	framework_id int,
 	engine_id int,
 	user_id varchar,
 	machine_id int,
-	timestamp datetime, /* it is when this testcycle starts? */	
+	timestamp datetime, /* it is when we collect the data, maybe in the driver or engine. */	
 	command_line varchar(500),
 	
 	primary key(id),
-	foreign key (orderable_id) references orderable(id),
 	foreign key (framework_id) references framework(id),
 	foreign key (engine_id) references engine(id),
 	foreign key (user_id) references user(id),
 	foreign key (machine_id) references machine(id)
+);
+
+/**
+ * This might be something that user create/modify/delete from the page. We can provide a page for that purpose.
+ * 'orderable' will be refered in table 'testcycle'.
+ */
+create table if not exists orderable (
+	id int not null auto_increment,
+	product_name varchar(200) not null,
+	platform varchar(200),
+	track varchar(200),
+	branch varchar(200),
+	
+	primary key(id)
 );
 
 /**
@@ -116,17 +124,11 @@ create table if not exists usage (
  * 'testsuite' contains 'testcase'
  * 'testcase' contains 'teststep'
  * 
- * For now, I will just ignore those foreign keys ('orderable_id', 'framework_id' etc.) and start the work, we can add them later
  */
 create table if not exists testcycle (
 	id int not null auto_increment,
-/*	orderable_id int,
-	framework_id int,
-	engine_id int,
-	user_id varchar,
-	machine_id int,
-	command_line varchar(500),
-	*/
+	orderable_id int,
+	
 	name varchar(100) not null,
 	tests int not null,
 	failures int not null,
@@ -134,19 +136,12 @@ create table if not exists testcycle (
 	time double not null, /* it is how long it gets all testsuites done, in millisecond? */
 	timestamp datetime, /* it is when this testcycle starts? */
 	
-	primary key(id)
-/*	primary key(id),
-	foreign key (orderable_id) references orderable(id),
-	foreign key (framework_id) references framework(id),
-	foreign key (engine_id) references engine(id),
-	foreign key (user_id) references user(id),
-	foreign key (machine_id) references machine(id)
-	*/
+	primary key(id),
+	foreign key (orderable_id) references orderable(id)
 );
 
 /**
- * 'testsuite' contains 'testcase' which contains 'teststep'
- * 
+ * The container of testcases.
  */
 create table if not exists testsuite (
 	id int not null auto_increment,
@@ -156,12 +151,15 @@ create table if not exists testsuite (
 	failures int not null,
 	skipped int,
 	time double not null, /* it is how long it gets all testcases done, in millisecond? */
-	timestamp datetime, /* it is when this testsuite starts? */
+	timestamp datetime, /* it is when this testsuite starts */
 	
 	primary key(id),
 	foreign key (testcycle_id) references testcycle(id)
 );
 
+/**
+ * The container of teststpes.
+ */
 create table if not exists testcase (
 	id int not null auto_increment,
 	testsuite_id int not null,
