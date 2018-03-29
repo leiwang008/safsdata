@@ -5,13 +5,15 @@ use safsdata;
 drop table if exists teststep;
 drop table if exists testcase;
 drop table if exists testsuite;
+drop table if exists testcycle;
 drop table if exists status;
+drop table if exists orderable;
+
+drop table if exists usage;
 drop table if exists engine;
 drop table if exists framework;
-drop table if exists orderable;
 drop table if exists machine;
 drop table if exists user;
-drop table if exists usage;
 
 /**
  * 'user' will be refered in table 'usage'.
@@ -65,28 +67,6 @@ create table if not exists engine (
 );
 
 /**
- * 'status' will be refered by table 'teststep'
- * 
- * How we define the type code?
- * 0 - Success
- * 1 - Failure (do we need a failure-type for different kinds of failures?)
- * 2 - Skipped
- * 3 ...
- * according to the 'type', we write the "junit xml" as below:
- * 
- * <failure type="type" diffFile="description"/>
- * <passed type="type" desc="description"/>
- * <skipped type="type" desc="description"/>
- */
-create table if not exists status (
-	id int not null auto_increment,
-	type varchar(50) not null,
-	description varchar(200) not null,
-	
-	primary key(id)
-);
-
-/**
  * This table will track down use of SAFS, SeleniumPlus etc.
  */
 create table if not exists usage (
@@ -115,6 +95,28 @@ create table if not exists orderable (
 	platform varchar(200),
 	track varchar(200),
 	branch varchar(200),
+	
+	primary key(id)
+);
+
+/**
+ * 'status' will be refered by table 'teststep'
+ * 
+ * How we define the type code?
+ * 0 - Success
+ * 1 - Failure (do we need a failure-type for different kinds of failures?)
+ * 2 - Skipped
+ * 3 ...
+ * according to the 'type', we write the "junit xml" as below:
+ * 
+ * <failure type="type" diffFile="description"/>
+ * <passed type="type" desc="description"/>
+ * <skipped type="type" desc="description"/>
+ */
+create table if not exists status (
+	id int not null auto_increment,
+	type varchar(50) not null,
+	description varchar(200) not null,
 	
 	primary key(id)
 );
