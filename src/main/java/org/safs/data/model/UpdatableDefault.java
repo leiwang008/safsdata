@@ -10,6 +10,7 @@
  * @date 2018-03-23    (Lei Wang) Initial release.
  * @date 2018-03-30    (Lei Wang) Added field 'filterForUpdateMethod' and method getFieldNamesIgnoredByUpdateMethod():
  *                                help to filter fields that will not be updated by method update().
+ * @date 2018-03-30    (Lei Wang) Added transient modifier to field 'filterForUpdateMethod' so that it will be ignored by Gson during persistence.
  */
 package org.safs.data.model;
 
@@ -41,7 +42,7 @@ public class UpdatableDefault<T> extends ToStringDefault implements Updatable <T
 	 *
 	 * @see #getFieldNamesIgnoredByToStringMethod()
 	 */
-	protected Filter<Field> filterForUpdateMethod = new FieldFilterByName(getFieldNamesIgnoredByUpdateMethod());
+	protected transient Filter<Field> filterForUpdateMethod = new FieldFilterByName(getFieldNamesIgnoredByUpdateMethod());
 
 	@Override
 	public void update(T o) {

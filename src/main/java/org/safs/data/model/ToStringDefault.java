@@ -10,6 +10,7 @@
  * @date 2018-03-23    (Lei Wang) Initial release.
  * @date 2018-03-30    (Lei Wang) Added field 'filterForToStringMethod' and method getFieldNamesIgnoredByToStringMethod():
  *                                help to filter fields that will not be included the string return by method toString().
+ * @date 2018-03-30    (Lei Wang) Added transient modifier to field 'filterForToStringMethod' so that it will be ignored by Gson during persistence.
  */
 package org.safs.data.model;
 
@@ -37,7 +38,7 @@ public class ToStringDefault{
 	 *
 	 * @see #getFieldNamesIgnoredByToStringMethod()
 	 */
-	protected Filter<Field> filterForToStringMethod = new FieldFilterByName(getFieldNamesIgnoredByToStringMethod());
+	protected transient Filter<Field> filterForToStringMethod = new FieldFilterByName(getFieldNamesIgnoredByToStringMethod());
 
 	@Override
 	public String toString(){
@@ -92,8 +93,10 @@ public class ToStringDefault{
 //		}
 		try {
 			//Firstly try to get it with getter method
+			//PropertyUtils needs commons-beanutils.jar on the classpath, otherwise it throw out NoClassDefFoundError,
+			//we catch NoClassDefFoundError and let java reflection to do the work
 			value = PropertyUtils.getProperty(this, field.getName());
-		} catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+		} catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException | java.lang.NoClassDefFoundError e) {
 			log.warn("Failed to get value for field '"+field.getName()+"'",e);
 			field.setAccessible(true);
 			try {
