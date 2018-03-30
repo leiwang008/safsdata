@@ -21,6 +21,8 @@ import javax.persistence.Id;
  */
 @Entity
 public class Status extends UpdatableDefault<Status>{
+	/** 'statuses' the base path to access entity */
+	public static final String REST_BASE_PATH = "statuses";
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
@@ -28,6 +30,20 @@ public class Status extends UpdatableDefault<Status>{
 
 	private String type;
 	private String description;
+
+	public Status() {
+		super();
+	}
+
+	/**
+	 * @param type
+	 * @param description
+	 */
+	public Status(String type, String description) {
+		super();
+		this.type = type;
+		this.description = description;
+	}
 
 	public Long getId() {
 		return id;

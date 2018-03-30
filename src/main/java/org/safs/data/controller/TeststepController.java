@@ -19,6 +19,7 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import org.safs.data.exception.RestException;
+import org.safs.data.model.ConstantPath;
 import org.safs.data.model.Teststep;
 import org.safs.data.repository.StatusRepository;
 import org.safs.data.repository.TestcaseRepository;
@@ -53,7 +54,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @Controller
 //@ResponseBody
 @ExposesResourceFor(Teststep.class)
-@RequestMapping(value="/teststeps", produces=MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value=Teststep.REST_BASE_PATH, produces=MediaType.APPLICATION_JSON_VALUE)
 public class TeststepController implements Verifier<Teststep>{
 	private static final Logger log = LoggerFactory.getLogger(TeststepController.class);
 
@@ -67,7 +68,7 @@ public class TeststepController implements Verifier<Teststep>{
 	@Autowired
 	TeststepResourceAssembler assembler;
 
-	@GetMapping(value="/{id}")
+	@GetMapping(value="{id}")
 	public ResponseEntity<TeststepResource> find(@PathVariable Long id){
 		Optional<Teststep> entity = teststepRepository.findById(id);
 		try{
@@ -88,7 +89,7 @@ public class TeststepController implements Verifier<Teststep>{
 	 * @param id Long, the test case's id.
 	 * @return
 	 */
-	@GetMapping(value="/testcase/{id}")
+	@GetMapping(value="testcase/{id}")
 	public ResponseEntity<Collection<TeststepResource>> findAllByTestcaseId(@PathVariable Long id){
 		Iterable<Teststep> entities = teststepRepository.findAllByTestcaseId(id);
 		return new ResponseEntity<>( assembler.toResourceCollection(entities), HttpStatus.OK);
@@ -99,7 +100,7 @@ public class TeststepController implements Verifier<Teststep>{
 	 * @param id Long, the status id.
 	 * @return
 	 */
-	@GetMapping(value="/status/{id}")
+	@GetMapping(value="status/{id}")
 	public ResponseEntity<Collection<TeststepResource>> findAllByStatusId(@PathVariable Long id){
 		Iterable<Teststep> entities = teststepRepository.findAllByStatusId(id);
 		return new ResponseEntity<>( assembler.toResourceCollection(entities), HttpStatus.OK);
@@ -111,7 +112,7 @@ public class TeststepController implements Verifier<Teststep>{
 	 * @param sId Long, the status id.
 	 * @return
 	 */
-	@GetMapping(value="/testcase/{tcId}/status/{sId}")
+	@GetMapping(value="testcase/{tcId}/status/{sId}")
 	public ResponseEntity<Collection<TeststepResource>> findAllByTestcaseId(@PathVariable Long tcId, @PathVariable Long sId){
 		Iterable<Teststep> entities = teststepRepository.findAllByTestcaseIdAndStatusId(tcId, sId);
 		return new ResponseEntity<>( assembler.toResourceCollection(entities), HttpStatus.OK);
@@ -127,7 +128,7 @@ public class TeststepController implements Verifier<Teststep>{
 		return ResponseEntity.status(HttpStatus.CREATED).body(assembler.toResource(item));
 	}
 
-	@DeleteMapping(value="/{id}")
+	@DeleteMapping(value="{id}")
 	public ResponseEntity<TeststepResource> delete(@PathVariable Long id){
 		if(teststepRepository.existsById(id)){
 			teststepRepository.deleteById(id);
@@ -137,7 +138,7 @@ public class TeststepController implements Verifier<Teststep>{
 		}
 	}
 
-	@PutMapping(value="/{id}", consumes=MediaType.APPLICATION_JSON_VALUE)
+	@PutMapping(value="{id}", consumes=MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<TeststepResource> update(@PathVariable Long id, @RequestBody Teststep body){
 		verifyDependenciesExist(body);
 
@@ -171,7 +172,7 @@ public class TeststepController implements Verifier<Teststep>{
 	}
 
 	//================================== MVC controller: To be resolved by InternalResourceViewResolver to .jsp page ============================================
-	@RequestMapping(value="/chart", method=RequestMethod.GET)
+	@RequestMapping(value=ConstantPath.CHART, method=RequestMethod.GET)
 	public String chart(ModelMap model){
 
 		Collection<TeststepResource> elements = assembler.toResourceCollection(teststepRepository.findAll());

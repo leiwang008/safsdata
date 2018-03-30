@@ -22,6 +22,8 @@ import javax.persistence.Id;
  */
 @Entity
 public class Testcase extends UpdatableDefault<Testcase>{
+	/** 'testcases' the base path to access entity */
+	public static final String REST_BASE_PATH = "testcases";
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long id;
@@ -29,6 +31,20 @@ public class Testcase extends UpdatableDefault<Testcase>{
 	private String name;
 	private double time;
 
+	public Testcase() {
+		super();
+	}
+	/**
+	 * @param testsuiteId
+	 * @param name
+	 * @param time
+	 */
+	public Testcase(Long testsuiteId, String name, double time) {
+		super();
+		this.testsuiteId = testsuiteId;
+		this.name = name;
+		this.time = time;
+	}
 	/**
 	 * @return the id
 	 */

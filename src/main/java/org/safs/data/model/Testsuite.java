@@ -25,6 +25,8 @@ import javax.persistence.Id;
  */
 @Entity
 public class Testsuite extends UpdatableDefault<Testsuite>{
+	/** 'testsuites' the base path to access entity */
+	public static final String REST_BASE_PATH = "testsuites";
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long id;
@@ -40,6 +42,32 @@ public class Testsuite extends UpdatableDefault<Testsuite>{
 	private int skipped;
 	private double time;
 	private Date timestamp;
+	/**
+	 *
+	 */
+	public Testsuite() {
+		super();
+	}
+
+	/**
+	 * @param testcycleId
+	 * @param name
+	 * @param tests
+	 * @param failures
+	 * @param skipped
+	 * @param time
+	 * @param timestamp
+	 */
+	public Testsuite(Long testcycleId, String name, int tests, int failures, int skipped, double time, Date timestamp) {
+		super();
+		this.testcycleId = testcycleId;
+		this.name = name;
+		this.tests = tests;
+		this.failures = failures;
+		this.skipped = skipped;
+		this.time = time;
+		this.timestamp = timestamp;
+	}
 
 	public Long getId() {
 		return id;

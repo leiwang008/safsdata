@@ -25,6 +25,8 @@ import javax.persistence.Id;
  */
 @Entity
 public class Usage extends UpdatableDefault<Usage>{
+	/** 'usages' the base path to access entity */
+	public static final String REST_BASE_PATH = "usages";
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long id;
@@ -34,7 +36,29 @@ public class Usage extends UpdatableDefault<Usage>{
 	private String userId;
 	private Date timestamp;
 	private String commandLine;
-
+	/**
+	 *
+	 */
+	public Usage() {
+		super();
+	}
+	/**
+	 * @param machineId
+	 * @param frameworkId
+	 * @param engineId
+	 * @param userId
+	 * @param timestamp
+	 * @param commandLine
+	 */
+	public Usage(Long machineId, Long frameworkId, Long engineId, String userId, Date timestamp, String commandLine) {
+		super();
+		this.machineId = machineId;
+		this.frameworkId = frameworkId;
+		this.engineId = engineId;
+		this.userId = userId;
+		this.timestamp = timestamp;
+		this.commandLine = commandLine;
+	}
 	/**
 	 * @return the id
 	 */

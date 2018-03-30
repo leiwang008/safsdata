@@ -19,6 +19,7 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import org.safs.data.exception.RestException;
+import org.safs.data.model.ConstantPath;
 import org.safs.data.model.Testcycle;
 import org.safs.data.model.Testsuite;
 import org.safs.data.repository.TestcycleRepository;
@@ -53,7 +54,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @Controller
 //@ResponseBody
 @ExposesResourceFor(Testcycle.class)
-@RequestMapping(value="/testcycles", produces=MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value=Testcycle.REST_BASE_PATH, produces=MediaType.APPLICATION_JSON_VALUE)
 public class TestcycleController implements Verifier<Testcycle> {
 	private static final Logger log = LoggerFactory.getLogger(TestcycleController.class);
 
@@ -80,7 +81,7 @@ public class TestcycleController implements Verifier<Testcycle> {
 		return new ResponseEntity<>(assembler.toResource(testcycle), HttpStatus.CREATED);
 	}
 
-	@GetMapping(value="/{id}")
+	@GetMapping(value="{id}")
 	public ResponseEntity<TestcycleResource> find(@PathVariable Long id){
 		Optional<Testcycle> enetity = testcycleRepository.findById(id);
 		try{
@@ -90,7 +91,7 @@ public class TestcycleController implements Verifier<Testcycle> {
 		}
 	}
 
-	@DeleteMapping(value="/{id}")
+	@DeleteMapping(value="{id}")
 	public ResponseEntity<TestcycleResource> delete(@PathVariable Long id){
 		try{
 			verifyDependentsNotExist(testcycleRepository.findById(id).get());
@@ -101,7 +102,7 @@ public class TestcycleController implements Verifier<Testcycle> {
 		}
 	}
 
-	@PutMapping(value="/{id}", consumes=MediaType.APPLICATION_JSON_VALUE)
+	@PutMapping(value="{id}", consumes=MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<TestcycleResource> update(@PathVariable Long id, @RequestBody Testcycle body){
 		verifyDependenciesExist(body);
 
@@ -132,7 +133,7 @@ public class TestcycleController implements Verifier<Testcycle> {
 	}
 
 	//================================== MVC controller: To be resolved by InternalResourceViewResolver to .jsp page ============================================
-	@RequestMapping(value="/chart", method=RequestMethod.GET)
+	@RequestMapping(value=ConstantPath.CHART_WITH_SEPARATOR, method=RequestMethod.GET)
 	public String chart(ModelMap model){
 
 		Field[] fields = TestcycleResource.class.getDeclaredFields();

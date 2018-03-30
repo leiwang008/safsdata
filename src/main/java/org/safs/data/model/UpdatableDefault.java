@@ -8,11 +8,16 @@
  *
  * History:
  * @date 2018-03-23    (Lei Wang) Initial release.
+ * @date 2018-03-30    (Lei Wang) Added field 'filterForUpdateMethod' and method getFieldNamesIgnoredByUpdateMethod():
+ *                                help to filter fields that will not be updated by method update().
  */
 package org.safs.data.model;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import javax.persistence.Id;
 
@@ -27,12 +32,20 @@ import org.slf4j.LoggerFactory;
  *
  * @author Lei Wang
  */
-public class UpdatableDefault<T extends Updatable<T>> extends ToStringDefault implements Updatable <T>{
+public class UpdatableDefault<T> extends ToStringDefault implements Updatable <T>{
 	private static final Logger log = LoggerFactory.getLogger(ToStringDefault.class);
+	/**
+	 * The filter used to tell us what field will be ignored by method {@link #update(Object)}.<br>
+	 * Here we provide a default {@link FieldFilterByName}, which is instantiated with {@link #getFieldNamesIgnoredByUpdateMethod()}.<br>
+	 * In subclass, we can either override {@link #getFieldNamesIgnoredByUpdateMethod()} or we can assign a new {@link Filter} to {@link #filterForUpdateMethod}.<br>
+	 *
+	 * @see #getFieldNamesIgnoredByToStringMethod()
+	 */
+	protected Filter<Field> filterForUpdateMethod = new FieldFilterByName(getFieldNamesIgnoredByUpdateMethod());
 
 	@Override
 	public void update(T o) {
-		Field[] fields = getClass().getDeclaredFields();
+		List<Field> fields = filterForUpdateMethod.filter(Arrays.asList(getClass().getDeclaredFields()));
 		Field oField = null;
 
 		for(Field field:fields){
@@ -54,6 +67,24 @@ public class UpdatableDefault<T extends Updatable<T>> extends ToStringDefault im
 				}
 			}
 		}
+	}
+
+	/**
+	 * Here an empty list is returned.<br>
+	 * Subclass needs to provide its own list to ignore so that these fields will not be added to method {@link #update(Object)}.
+	 * @return List<String>, a list of name for the field to be ignored by {@link #update(Object)}.
+	 */
+	protected List<String> getFieldNamesIgnoredByUpdateMethod(){
+		List<String> ignoredFields = new ArrayList<String>();
+		ignoredFields.add("REST_BASE_PATH");
+		return ignoredFields;
+	}
+
+	@Override
+	protected List<String> getFieldNamesIgnoredByToStringMethod(){
+		List<String> ignoredFields = new ArrayList<String>();
+		ignoredFields.add("REST_BASE_PATH");
+		return ignoredFields;
 	}
 
 }

@@ -8,6 +8,7 @@
  *
  * History:
  * @date 2018-03-22    (Lei Wang) Initial release.
+ * @date 2018-03-30    (Lei Wang) Added constant 'REST_BASE_PATH'.
  */
 package org.safs.data.model;
 
@@ -26,6 +27,8 @@ import javax.persistence.UniqueConstraint;
 @Entity
 @Table(uniqueConstraints={ @UniqueConstraint(columnNames = {"name", "ip"}) })
 public class Machine extends UpdatableDefault<Machine>{
+	/** 'machines' the base path to access entity */
+	public static final String REST_BASE_PATH = "machines";
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long id;
@@ -37,6 +40,23 @@ public class Machine extends UpdatableDefault<Machine>{
 	@Column(length=15)
 	private String ip;
 	private String platform;
+
+	//The default constructor is needed by hibernate when querying database.
+	public Machine() {
+		super();
+	}
+
+	/**
+	 * @param name
+	 * @param ip
+	 * @param platform
+	 */
+	public Machine(String name, String ip, String platform) {
+		super();
+		this.name = name;
+		this.ip = ip;
+		this.platform = platform;
+	}
 
 	/**
 	 * @return the id

@@ -22,12 +22,32 @@ import javax.persistence.Id;
  */
 @Entity
 public class Teststep extends UpdatableDefault<Teststep>{
+	/** 'teststeps' the base path to access entity */
+	public static final String REST_BASE_PATH = "teststeps";
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long id;
 	private Long testcaseId;
 	private Long statusId;
 	private String logMessage;
+	/**
+	 *
+	 */
+	public Teststep() {
+		super();
+	}
+
+	/**
+	 * @param testcaseId
+	 * @param statusId
+	 * @param logMessage
+	 */
+	public Teststep(Long testcaseId, Long statusId, String logMessage) {
+		super();
+		this.testcaseId = testcaseId;
+		this.statusId = statusId;
+		this.logMessage = logMessage;
+	}
 
 	/**
 	 * @return the id

@@ -8,6 +8,8 @@
  *
  * History:
  * @date 2018-03-22    (Lei Wang) Initial release.
+ * @date 2018-03-30    (Lei Wang) Used constant to specify the path for annotation @RequestMapping
+ *                                Removed the leading "/" for the path in each request-method, it is relative to the path of this class annotated with @RequestMapping(value=xxx).
  */
 package org.safs.data.controller;
 
@@ -45,7 +47,7 @@ import org.springframework.web.bind.annotation.RestController;
 @CrossOrigin(origins="*")
 @RestController
 @ExposesResourceFor(Machine.class)
-@RequestMapping(value="machines", produces=MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value=Machine.REST_BASE_PATH, produces=MediaType.APPLICATION_JSON_VALUE)
 public class MachineController implements Verifier<Machine>{
 	private static final Logger log = LoggerFactory.getLogger(MachineController.class);
 
@@ -77,7 +79,7 @@ public class MachineController implements Verifier<Machine>{
 		}
 	}
 
-	@GetMapping(value="/{id}")
+	@GetMapping(value="{id}")
 	public ResponseEntity<MachineResource> find(@PathVariable Long id){
 		try{
 			Optional<Machine> element = machineRepository.findById(id);
@@ -87,7 +89,7 @@ public class MachineController implements Verifier<Machine>{
 		}
 	}
 
-	@DeleteMapping(value="/{id}")
+	@DeleteMapping(value="{id}")
 	public ResponseEntity<MachineResource> delete(@PathVariable Long id){
 		try{
 			verifyDependentsNotExist(machineRepository.findById(id).get());
@@ -98,7 +100,7 @@ public class MachineController implements Verifier<Machine>{
 		}
 	}
 
-	@PutMapping(value="/{id}")
+	@PutMapping(value="{id}")
 	public ResponseEntity<MachineResource> update(@PathVariable Long id, @RequestBody Machine body){
 		if(!machineRepository.existsById(id)){
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();

@@ -21,13 +21,31 @@ import javax.persistence.Id;
  */
 @Entity
 public class User extends UpdatableDefault<User>{
-
+	/** 'users' the base path to access entity */
+	public static final String REST_BASE_PATH = "users";
 	@Id
 	@Column(nullable=false)
 	private String id;
 
 	private String firstName;
 	private String lastName;
+	/**
+	 *
+	 */
+	public User() {
+		super();
+	}
+	/**
+	 * @param id
+	 * @param firstName
+	 * @param lastName
+	 */
+	public User(String id, String firstName, String lastName) {
+		super();
+		this.id = id;
+		this.firstName = firstName;
+		this.lastName = lastName;
+	}
 	/**
 	 * @return the id
 	 */

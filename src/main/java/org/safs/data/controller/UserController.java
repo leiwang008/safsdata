@@ -44,7 +44,7 @@ import org.springframework.web.bind.annotation.RestController;
 @CrossOrigin(origins="*")
 @RestController
 @ExposesResourceFor(User.class)
-@RequestMapping(value="users", produces=MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value=User.REST_BASE_PATH, produces=MediaType.APPLICATION_JSON_VALUE)
 public class UserController implements Verifier<User>{
 	private static final Logger log = LoggerFactory.getLogger(UserController.class);
 
@@ -74,7 +74,7 @@ public class UserController implements Verifier<User>{
 		}
 	}
 
-	@GetMapping(value="/{id}")
+	@GetMapping(value="{id}")
 	public ResponseEntity<UserResource> find(@PathVariable String id){
 		try{
 			Optional<User> element = userRepository.findById(id);
@@ -84,7 +84,7 @@ public class UserController implements Verifier<User>{
 		}
 	}
 
-	@DeleteMapping(value="/{id}")
+	@DeleteMapping(value="{id}")
 	public ResponseEntity<UserResource> delete(@PathVariable String id){
 		try{
 			verifyDependentsNotExist(userRepository.findById(id).get());
@@ -95,7 +95,7 @@ public class UserController implements Verifier<User>{
 		}
 	}
 
-	@PutMapping(value="/{id}")
+	@PutMapping(value="{id}")
 	public ResponseEntity<UserResource> update(@PathVariable String id, @RequestBody User body){
 		if(!userRepository.existsById(id)){
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();

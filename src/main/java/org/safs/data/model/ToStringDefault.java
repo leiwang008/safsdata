@@ -8,17 +8,20 @@
  *
  * History:
  * @date 2018-03-23    (Lei Wang) Initial release.
+ * @date 2018-03-30    (Lei Wang) Added field 'filterForToStringMethod' and method getFieldNamesIgnoredByToStringMethod():
+ *                                help to filter fields that will not be included the string return by method toString().
  */
 package org.safs.data.model;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import org.apache.commons.beanutils.PropertyUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-
 
 /**
  * This class overrides the method toString() to print each fields with a separator "|" between them, such as "tomroc | tom | rocker | ".<br>
@@ -27,10 +30,18 @@ import org.slf4j.LoggerFactory;
  */
 public class ToStringDefault{
 	private static final Logger log = LoggerFactory.getLogger(ToStringDefault.class);
+	/**
+	 * The filter used to tell us what field will be ignored by method {@link #toString()}.<br>
+	 * Here we provide a default {@link FieldFilterByName}, which is instantiated with {@link #getFieldNamesIgnoredByToStringMethod()}.<br>
+	 * In subclass, we can either override {@link #getFieldNamesIgnoredByToStringMethod()} or we can assign a new {@link Filter} to {@link #filterForToStringMethod}.<br>
+	 *
+	 * @see #getFieldNamesIgnoredByToStringMethod()
+	 */
+	protected Filter<Field> filterForToStringMethod = new FieldFilterByName(getFieldNamesIgnoredByToStringMethod());
 
 	@Override
 	public String toString(){
-		Field[] fields = getClass().getDeclaredFields();
+		List<Field> fields = filterForToStringMethod.filter(Arrays.asList(getClass().getDeclaredFields()));
 		StringBuilder sb = new StringBuilder();
 
 		for(Field field:fields) sb.append(getFieldValue(field)+" | ");
@@ -39,7 +50,19 @@ public class ToStringDefault{
 	}
 
 	/**
-	 * Get the field's value. Firstly try to get it with getter method.
+	 * Here an empty list is returned.<br>
+	 * Subclass needs to provide its own list to ignore so that these fields will not be added to method {@link #toString()}.
+	 * @return List<String>, a list of name for the field to be ignored by {@link #toString()}.
+	 */
+	protected List<String> getFieldNamesIgnoredByToStringMethod(){
+		return new ArrayList<String>();
+	}
+
+	/**
+	 * Get the field's value.<br>
+	 * Sometimes we don't want the real value of a field when putting it in the toString() method,<br>
+	 * so we firstly try to get it with getter method, which may provide a pretty string than a real value.<br>
+	 * If getter method failed, then try to get directly the field's value by java reflection.<br>
 	 * @param field Field
 	 * @return Object, the field's value, it can be null.
 	 */
@@ -68,14 +91,16 @@ public class ToStringDefault{
 //			log.debug("Failed to get value for field '"+field.getName()+"'",e);
 //		}
 		try {
+			//Firstly try to get it with getter method
 			value = PropertyUtils.getProperty(this, field.getName());
 		} catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-			log.debug("Failed to get value for field '"+field.getName()+"'",e);
+			log.warn("Failed to get value for field '"+field.getName()+"'",e);
 			field.setAccessible(true);
 			try {
+				//try to get directly the field's value by java reflection
 				value = field.get(this);
 			} catch (IllegalArgumentException | IllegalAccessException e1) {
-				log.debug("Failed to get value for field '"+field.getName()+"'",e1);
+				log.warn("Failed to get value for field '"+field.getName()+"'",e1);
 			}
 		}
 

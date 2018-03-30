@@ -19,6 +19,7 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import org.safs.data.exception.RestException;
+import org.safs.data.model.ConstantPath;
 import org.safs.data.model.Status;
 import org.safs.data.model.Teststep;
 import org.safs.data.repository.StatusRepository;
@@ -54,7 +55,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 //@ResponseBody
 @ExposesResourceFor(Status.class)
 //If we don't use below RequestMapping, EntityLinks will not consider "/status" as link for class 'Status'
-@RequestMapping(value="/statuses", produces=MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value=Status.REST_BASE_PATH, produces=MediaType.APPLICATION_JSON_VALUE)
 public class StatusController implements Verifier<Status> {
 	private static final Logger log = LoggerFactory.getLogger(StatusController.class);
 
@@ -81,7 +82,7 @@ public class StatusController implements Verifier<Status> {
 		return new ResponseEntity<>(assembler.toResource(status), HttpStatus.CREATED);
 	}
 
-	@GetMapping(value="/{id}")
+	@GetMapping(value="{id}")
 	public ResponseEntity<StatusResource> find(@PathVariable Long id){
 		Optional<Status> element = statusRepository.findById(id);
 		try{
@@ -91,7 +92,7 @@ public class StatusController implements Verifier<Status> {
 		}
 	}
 
-	@DeleteMapping(value="/{id}")
+	@DeleteMapping(value="{id}")
 	public ResponseEntity<StatusResource> delete(@PathVariable Long id){
 		try{
 			verifyDependentsNotExist(statusRepository.findById(id).get());
@@ -102,7 +103,7 @@ public class StatusController implements Verifier<Status> {
 		}
 	}
 
-	@PutMapping(value="/{id}")
+	@PutMapping(value="{id}")
 	public ResponseEntity<StatusResource> update(@PathVariable Long id, @RequestBody Status body){
 		if(!statusRepository.existsById(id)){
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
@@ -128,7 +129,7 @@ public class StatusController implements Verifier<Status> {
 	}
 
 	//================================== MVC controller: To be resolved by InternalResourceViewResolver to .jsp page ============================================
-	@RequestMapping(value="/chart", method=RequestMethod.GET)
+	@RequestMapping(value=ConstantPath.CHART_WITH_SEPARATOR, method=RequestMethod.GET)
 	public String statusChart(ModelMap model){
 
 		Collection<StatusResource> elements = assembler.toResourceCollection(statusRepository.findAll());

@@ -17,6 +17,7 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import org.safs.data.exception.RestException;
+import org.safs.data.model.ConstantPath;
 import org.safs.data.model.Testcase;
 import org.safs.data.model.Teststep;
 import org.safs.data.repository.TestcaseRepository;
@@ -52,7 +53,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @Controller
 //@ResponseBody
 @ExposesResourceFor(Testcase.class)
-@RequestMapping(value="/testcases", produces=MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value=Testcase.REST_BASE_PATH, produces=MediaType.APPLICATION_JSON_VALUE)
 public class TestcaseController implements Verifier<Testcase>{
 	private static final Logger log = LoggerFactory.getLogger(TestcaseController.class);
 
@@ -73,7 +74,7 @@ public class TestcaseController implements Verifier<Testcase>{
 		return new ResponseEntity<>(f, HttpStatus.OK);
 	}
 
-	@GetMapping(value="/testsuite/{suiteId}")
+	@GetMapping(value="testsuite/{suiteId}")
 	public ResponseEntity<Collection<TestcaseResource>> findAllBytestsuiteId(@PathVariable Long suiteId){
 		Collection<Testcase> c = testcaseRepository.findAllBytestsuiteId(suiteId);
 		return new ResponseEntity<>(assembler.toResourceCollection(c), HttpStatus.OK);
@@ -88,7 +89,7 @@ public class TestcaseController implements Verifier<Testcase>{
 		return new ResponseEntity<>(assembler.toResource(cc), HttpStatus.CREATED);
 	}
 
-	@GetMapping(value="/{id}")
+	@GetMapping(value="{id}")
 	public ResponseEntity<TestcaseResource> find(@PathVariable Long id){
 		Optional<Testcase> c = testcaseRepository.findById(id);
 		try{
@@ -98,7 +99,7 @@ public class TestcaseController implements Verifier<Testcase>{
 		}
 	}
 
-	@DeleteMapping(value="/{id}")
+	@DeleteMapping(value="{id}")
 	public ResponseEntity<TestcaseResource> delete(@PathVariable Long id){
 		try{
 			verifyDependentsNotExist(testcaseRepository.findById(id).get());
@@ -110,7 +111,7 @@ public class TestcaseController implements Verifier<Testcase>{
 
 	}
 
-	@PutMapping(value="/{id}", consumes=MediaType.APPLICATION_JSON_VALUE )
+	@PutMapping(value="{id}", consumes=MediaType.APPLICATION_JSON_VALUE )
 	public ResponseEntity<TestcaseResource> update(@PathVariable Long id, @RequestBody Testcase body){
 		verifyDependenciesExist(body);
 
@@ -142,7 +143,7 @@ public class TestcaseController implements Verifier<Testcase>{
 	}
 
 	//================================== MVC controller: To be resolved by InternalResourceViewResolver to .jsp page ============================================
-	@RequestMapping(value="/chart", method=RequestMethod.GET)
+	@RequestMapping(value=ConstantPath.CHART_WITH_SEPARATOR, method=RequestMethod.GET)
 	public String chart(ModelMap model){
 
 		Collection<TestcaseResource> elements = assembler.toResourceCollection(testcaseRepository.findAll());
