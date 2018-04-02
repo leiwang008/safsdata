@@ -39,7 +39,7 @@
     		<scope>provided</scope>
 		</dependency>
 		<!-- This is for running without "embedded tomcat". We will run a .war in an outside Tomcat. -->
-		<!-- dependency>
+		<!--dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-tomcat</artifactId>
 			<scope>provided</scope>
@@ -97,6 +97,13 @@
 		    <groupId>commons-beanutils</groupId>
     		<artifactId>commons-beanutils</artifactId>
     		<version>1.9.3</version>
+		</dependency>
+
+		<!-- The safsdatamodel should be got from your local maven repository, please run dependencies/mavenInstallJars.bat firstly -->
+		<dependency>
+		    <groupId>org.safs.data.model</groupId>
+		    <artifactId>safsdatamodel</artifactId>
+		    <version>1.0</version>
 		</dependency>
 
 	</dependencies>
