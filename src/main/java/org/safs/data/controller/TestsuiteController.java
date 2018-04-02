@@ -12,15 +12,16 @@
 package org.safs.data.controller;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import org.safs.data.exception.RestException;
 import org.safs.data.model.ConstantPath;
 import org.safs.data.model.Testcase;
+import org.safs.data.model.Testcycle;
 import org.safs.data.model.Testsuite;
 import org.safs.data.repository.TestcaseRepository;
+import org.safs.data.repository.TestcycleRepository;
 import org.safs.data.repository.TestsuiteRepository;
 import org.safs.data.resource.TestsuiteResource;
 import org.safs.data.resource.TestsuiteResourceAssembler;
@@ -60,6 +61,8 @@ public class TestsuiteController implements Verifier<Testsuite> {
 	TestcaseRepository testcaseRepository;
 	@Autowired
 	TestsuiteRepository testsuiteRepository;
+	@Autowired
+	TestcycleRepository testcycleRepository;
 
 	@Autowired
 	TestsuiteResourceAssembler assembler;
@@ -75,7 +78,7 @@ public class TestsuiteController implements Verifier<Testsuite> {
 		verifyDependenciesExist(body);
 
 		Testsuite testsuite = testsuiteRepository.save(body);
-		log.debug("testsuite has been created in the repository.");
+		log.debug(Testsuite.class.getName()+" has been created in the repository.");
 		return new ResponseEntity<>(assembler.toResource(testsuite), HttpStatus.CREATED);
 	}
 
@@ -85,7 +88,7 @@ public class TestsuiteController implements Verifier<Testsuite> {
 		try{
 			return ResponseEntity.status(HttpStatus.OK).body(assembler.toResource(enetity.get()));
 		}catch(NoSuchElementException nse){
-			throw new RestException("Failed to find Testsuite by id '"+id+"'", HttpStatus.NOT_FOUND);
+			throw new RestException("Failed to find "+Testsuite.class.getName()+" by id '"+id+"'", HttpStatus.NOT_FOUND);
 		}
 	}
 
@@ -110,20 +113,30 @@ public class TestsuiteController implements Verifier<Testsuite> {
 			testsuiteRepository.save(original);
 			return ResponseEntity.status(HttpStatus.OK).body(assembler.toResource(original));
 		}catch(NoSuchElementException e){
-			throw new RestException("Failed to upate Testsuite by id '"+id+"'", HttpStatus.NOT_FOUND);
+			throw new RestException("Failed to upate "+Testsuite.class.getName()+" by id '"+id+"'", HttpStatus.NOT_FOUND);
 		}
 	}
 
 	@Override
 	public void verifyDependenciesExist(Testsuite entity) throws RestException {
-		//TODO We need to verify that dependencies exist.
+		String me = entity.getClass().getName();
+		String dependency = null;
+		//It depends on 'Testcycle'
+		try{
+			dependency = Testcycle.class.getName();
+			testcycleRepository.findById(entity.getTestcycleId()).get();
+		}catch(NoSuchElementException e){
+			throw new RestException("Cannot find "+dependency+" by ID '"+entity.getTestcycleId()+"', so the "+me+" cannot be updated to refer to that "+dependency+".");
+		}
 	}
 
 	@Override
 	public void verifyDependentsNotExist(Testsuite entity) throws RestException {
-		List<Testcase> elements = testcaseRepository.findAllBytestsuiteId(entity.getId());
-		if(!elements.isEmpty()){
-			throw new RestException("Cannot delete testsuite by id '"+entity.getId()+"', there are still testcases depeding on it!", HttpStatus.FAILED_DEPENDENCY);
+		String me = entity.getClass().getName();
+		//'Testcase' depends on me.
+		String dependent = Testcase.class.getName();
+		if(!testcaseRepository.findAllBytestsuiteId(entity.getId()).isEmpty()){
+			throw new RestException("Cannot delete "+me+" by id '"+entity.getId()+"', there are still "+dependent+"s depending on it!", HttpStatus.FAILED_DEPENDENCY);
 		}
 	}
 

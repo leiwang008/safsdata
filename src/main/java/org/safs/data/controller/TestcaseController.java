@@ -12,7 +12,6 @@
 package org.safs.data.controller;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
@@ -20,6 +19,7 @@ import org.safs.data.exception.RestException;
 import org.safs.data.model.ConstantPath;
 import org.safs.data.model.Testcase;
 import org.safs.data.model.Teststep;
+import org.safs.data.model.Testsuite;
 import org.safs.data.repository.TestcaseRepository;
 import org.safs.data.repository.TeststepRepository;
 import org.safs.data.repository.TestsuiteRepository;
@@ -85,7 +85,7 @@ public class TestcaseController implements Verifier<Testcase>{
 		verifyDependenciesExist(body);
 
 		Testcase cc = testcaseRepository.save(body);
-		log.debug("testcase has been created in the repository.");
+		log.debug(Testcase.class.getName()+" has been created in the repository.");
 		return new ResponseEntity<>(assembler.toResource(cc), HttpStatus.CREATED);
 	}
 
@@ -127,18 +127,24 @@ public class TestcaseController implements Verifier<Testcase>{
 
 	@Override
 	public void verifyDependenciesExist(Testcase entity) throws RestException {
+		String me = entity.getClass().getName();
+		String dependency = null;
+		//Depends on 'Testsuite'
 		try{
+			dependency = Testsuite.class.getName();
 			testsuiteRepository.findById(entity.getTestsuiteId()).get();
 		}catch(NoSuchElementException e){
-			throw new RestException("Cannot find testsuite by ID '"+entity.getTestsuiteId()+"', so the testcase cannot be created with that testsuite.");
+			throw new RestException("Cannot find "+dependency+" by ID '"+entity.getTestsuiteId()+"', so the "+me+" cannot be created with that "+dependency+".");
 		}
 	}
 
 	@Override
 	public void verifyDependentsNotExist(Testcase entity) throws RestException {
-		List<Teststep> elements = teststepRepository.findAllByTestcaseId(entity.getId());
-		if(!elements.isEmpty()){
-			throw new RestException("Cannot delete testcase by id '"+entity.getId()+"', there are still teststeps depeding on it!", HttpStatus.FAILED_DEPENDENCY);
+		String me = entity.getClass().getName();
+		//'Teststep' depends on me.
+		String dependent = Teststep.class.getName();
+		if(!teststepRepository.findAllByTestcaseId(entity.getId()).isEmpty()){
+			throw new RestException("Cannot delete "+me+" by id '"+entity.getId()+"', there are still "+dependent+"s depending on it!", HttpStatus.FAILED_DEPENDENCY);
 		}
 	}
 

@@ -6,6 +6,29 @@
 #					('Iron Iron', 5.4),
 #					('Baby Car Seat', 86.99);
 
+insert into user(id, first_name, last_name) values ('tomnil', 'Tom', 'Nile');
+insert into user(id, first_name, last_name) values ('sunbil', 'Susan', 'Bill');
+
+
+insert into machine(name, ip, platform) values ('testMachine1', '192.168.0.1', 'Windows 10');
+insert into machine(name, ip, platform) values ('testMachine2', '192.168.0.2', 'Windows 7');
+
+
+insert into framework(name, version, description) values ('SAFS', '3.0', 'Software Automation Framework Support');
+insert into framework(name, version, description) values ('SeleniumPlus', '1.0', 'Support Web Testing with Selenium Engine');
+
+
+insert into engine(name, version, description) values ('RFT', '8.0', 'Rational Functional Tester');
+insert into engine(name, version, description) values ('TC', '8.0', 'Test Complete');
+insert into engine(name, version, description) values ('Selenium', '3.4.0', 'Selenium standalone server');
+
+
+insert into usage(framework_id, engine_id, user_id, machine_id, timestamp, command_line) values (2, 3, 1, 2, '2018-02-22T09:35:15', '"c:\\seleniumplus\\Java\\jre\\bin\\java.exe"  -cp "c:\\seleniumplus\\libs\\seleniumplus.jar;c:\\seleniumplus\\libs\\JSTAFEmbedded.jar;c:\\seleniumplus\\libs\\selenium-server-standalone-3.4.0.jar";bin org.sas.VATest');
+
+
+insert into orderable(product_name, platform, track, branch) values ('Visual Analytic', 'Windows', '18w12', 'branchABC');
+
+
 insert into status(type, description) values ('0', 'GENERIC');
 insert into status(type, description) values ('7', 'DEBUG');
 insert into status(type, description) values ('256', 'SKIPPED');
@@ -16,7 +39,7 @@ insert into status(type, description) values ('4096', 'WARNING');
 insert into status(type, description) values ('4097', 'WARNING_OK');
 insert into status(type, description) values ('10000', 'CUSTOM');
 
-insert into testcycle(name, tests, failures, skipped, time, timestamp, command_line) values ('VA Test', 10, 2, 1, 2560, '2018-02-22T09:39:15', '"c:\\seleniumplus\\Java\\jre\\bin\\java.exe"  -cp "c:\\seleniumplus\\libs\\seleniumplus.jar;c:\\seleniumplus\\libs\\JSTAFEmbedded.jar;c:\\seleniumplus\\libs\\selenium-server-standalone-3.4.0.jar";bin org.sas.VATest');
+insert into testcycle(orderable_id, name, tests, failures, skipped, time, timestamp) values (1, 'VA Test', 10, 2, 1, 2560, '2018-02-22T09:39:15');
 
 insert into testsuite(testcycle_id, name, tests, failures, skipped, time, timestamp) values (1, 'VA Test Suite1', 10, 2, 1, 2560, '2018-02-22T09:39:15');
 

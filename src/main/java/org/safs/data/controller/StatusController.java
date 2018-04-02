@@ -13,15 +13,14 @@ package org.safs.data.controller;
 
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
+import org.apache.taglibs.standard.extra.spath.Step;
 import org.safs.data.exception.RestException;
 import org.safs.data.model.ConstantPath;
 import org.safs.data.model.Status;
-import org.safs.data.model.Teststep;
 import org.safs.data.repository.StatusRepository;
 import org.safs.data.repository.TeststepRepository;
 import org.safs.data.resource.StatusResource;
@@ -77,8 +76,9 @@ public class StatusController implements Verifier<Status> {
 
 	@PostMapping(consumes=MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<StatusResource> create(@RequestBody Status body){
+		verifyDependenciesExist(body);
 		Status status = statusRepository.save(body);
-		log.debug("status has been created in the repository.");
+		log.debug(Status.class.getName()+" has been created in the repository.");
 		return new ResponseEntity<>(assembler.toResource(status), HttpStatus.CREATED);
 	}
 
@@ -88,7 +88,7 @@ public class StatusController implements Verifier<Status> {
 		try{
 			return new ResponseEntity<>(assembler.toResource(element.get()), HttpStatus.OK);
 		}catch(NoSuchElementException nse){
-			throw new RestException("Failed to find Status by id '"+id+"'", HttpStatus.NOT_FOUND);
+			throw new RestException("Failed to find "+Status.class.getName()+" by id '"+id+"'", HttpStatus.NOT_FOUND);
 		}
 	}
 
@@ -110,6 +110,7 @@ public class StatusController implements Verifier<Status> {
 		}else{
 			Status original = statusRepository.findById(id).get();
 			original.update(body);
+			verifyDependenciesExist(original);
 			statusRepository.save(original);
 			return new ResponseEntity<>(assembler.toResource(original), HttpStatus.OK);
 		}
@@ -122,9 +123,11 @@ public class StatusController implements Verifier<Status> {
 
 	@Override
 	public void verifyDependentsNotExist(Status entity) throws RestException {
-		List<Teststep> steps = teststepRepository.findAllByStatusId(entity.getId());
-		if(!steps.isEmpty()){
-			throw new RestException("Cannot delete status by id '"+entity.getId()+"', there are still Steps depeding on it!", HttpStatus.FAILED_DEPENDENCY);
+		String me = entity.getClass().getName();
+		//'Step' depends on me.
+		String dependent = Step.class.getName();
+		if(!teststepRepository.findAllByTestcaseId(entity.getId()).isEmpty()){
+			throw new RestException("Cannot delete "+me+" by id '"+entity.getId()+"', there are still "+dependent+"s depending on it!", HttpStatus.FAILED_DEPENDENCY);
 		}
 	}
 

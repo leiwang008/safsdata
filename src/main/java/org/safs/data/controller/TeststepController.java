@@ -20,6 +20,8 @@ import java.util.Optional;
 
 import org.safs.data.exception.RestException;
 import org.safs.data.model.ConstantPath;
+import org.safs.data.model.Status;
+import org.safs.data.model.Testcase;
 import org.safs.data.model.Teststep;
 import org.safs.data.repository.StatusRepository;
 import org.safs.data.repository.TestcaseRepository;
@@ -74,7 +76,7 @@ public class TeststepController implements Verifier<Teststep>{
 		try{
 			return ResponseEntity.status(HttpStatus.OK).body(assembler.toResource(entity.get()));
 		}catch(NoSuchElementException e){
-			throw new RestException("Failed to find teststep by id '"+id+"'", HttpStatus.NOT_FOUND);
+			throw new RestException("Failed to find "+Teststep.class.getName()+" by id '"+id+"'", HttpStatus.NOT_FOUND);
 		}
 	}
 
@@ -124,7 +126,7 @@ public class TeststepController implements Verifier<Teststep>{
 		verifyDependenciesExist(body);
 
 		Teststep item = teststepRepository.save(body);
-		log.debug("teststep has been created in the repository.");
+		log.debug(Teststep.class.getName()+" has been created in the repository.");
 		return ResponseEntity.status(HttpStatus.CREATED).body(assembler.toResource(item));
 	}
 
@@ -134,7 +136,7 @@ public class TeststepController implements Verifier<Teststep>{
 			teststepRepository.deleteById(id);
 			return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
 		}else{
-			throw new RestException("Failed to delete teststep by id '"+id+"'", HttpStatus.NOT_FOUND);
+			throw new RestException("Failed to delete "+Teststep.class.getName()+" by id '"+id+"'", HttpStatus.NOT_FOUND);
 		}
 	}
 
@@ -154,15 +156,21 @@ public class TeststepController implements Verifier<Teststep>{
 
 	@Override
 	public void verifyDependenciesExist(Teststep entity) throws RestException {
+		String me = entity.getClass().getName();
+		String dependency = null;
+		//It depends on 'Testcase'
 		try{
+			dependency = Testcase.class.getName();
 			testcaseRepository.findById(entity.getTestcaseId()).get();
 		}catch(NoSuchElementException e){
-			throw new RestException("Cannot find testcase by ID '"+entity.getTestcaseId()+"', so the teststep cannot be updated to refer to that testcase.");
+			throw new RestException("Cannot find "+dependency+" by ID '"+entity.getTestcaseId()+"', so the "+me+" cannot be updated to refer to that "+dependency+".");
 		}
+		//It depends on 'Status'
 		try{
+			dependency = Status.class.getName();
 			statusRepository.findById(entity.getStatusId()).get();
 		}catch(NoSuchElementException e){
-			throw new RestException("Cannot find status by ID '"+entity.getStatusId()+"', so the teststep cannot be updated to refer to that status.");
+			throw new RestException("Cannot find "+dependency+" by ID '"+entity.getStatusId()+"', so the "+me+" cannot be updated to refer to that "+dependency+".");
 		}
 	}
 

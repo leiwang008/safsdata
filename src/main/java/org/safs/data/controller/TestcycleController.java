@@ -20,8 +20,10 @@ import java.util.Optional;
 
 import org.safs.data.exception.RestException;
 import org.safs.data.model.ConstantPath;
+import org.safs.data.model.Orderable;
 import org.safs.data.model.Testcycle;
 import org.safs.data.model.Testsuite;
+import org.safs.data.repository.OrderableRepository;
 import org.safs.data.repository.TestcycleRepository;
 import org.safs.data.repository.TestsuiteRepository;
 import org.safs.data.resource.TestcycleResource;
@@ -62,6 +64,8 @@ public class TestcycleController implements Verifier<Testcycle> {
 	TestcycleRepository testcycleRepository;
 	@Autowired
 	TestsuiteRepository testsuiteRepository;
+	@Autowired
+	OrderableRepository orderableRepository;
 
 	@Autowired
 	TestcycleResourceAssembler assembler;
@@ -77,7 +81,7 @@ public class TestcycleController implements Verifier<Testcycle> {
 		verifyDependenciesExist(body);
 
 		Testcycle testcycle = testcycleRepository.save(body);
-		log.debug("testcycle has been created in the repository.");
+		log.debug(Testcycle.class.getName()+" has been created in the repository.");
 		return new ResponseEntity<>(assembler.toResource(testcycle), HttpStatus.CREATED);
 	}
 
@@ -87,7 +91,7 @@ public class TestcycleController implements Verifier<Testcycle> {
 		try{
 			return ResponseEntity.status(HttpStatus.OK).body(assembler.toResource(enetity.get()));
 		}catch(NoSuchElementException nse){
-			throw new RestException("Failed to find Testcycle by id '"+id+"'", HttpStatus.NOT_FOUND);
+			throw new RestException("Failed to find "+Testcycle.class.getName()+" by id '"+id+"'", HttpStatus.NOT_FOUND);
 		}
 	}
 
@@ -114,21 +118,30 @@ public class TestcycleController implements Verifier<Testcycle> {
 			testcycleRepository.save(original);
 			return ResponseEntity.status(HttpStatus.OK).body(assembler.toResource(original));
 		}catch(NoSuchElementException e){
-			throw new RestException("Failed to upate Testcycle by id '"+id+"'", HttpStatus.NOT_FOUND);
+			throw new RestException("Failed to upate "+Testcycle.class.getName()+" by id '"+id+"'", HttpStatus.NOT_FOUND);
 		}
 	}
 
 	@Override
 	public void verifyDependenciesExist(Testcycle entity) throws RestException {
-		//TODO We need to verify that dependencies (user, machine, framework, engine etc. ) exist.
+		String me = entity.getClass().getName();
+		String dependency = null;
+		//It depends on 'Orderable'
+		try{
+			dependency = Orderable.class.getName();
+			orderableRepository.findById(entity.getOrderableId()).get();
+		}catch(NoSuchElementException e){
+			throw new RestException("Cannot find "+dependency+" by ID '"+entity.getOrderableId()+"', so the "+me+" cannot be updated to refer to that "+dependency+".");
+		}
 	}
 
 	@Override
 	public void verifyDependentsNotExist(Testcycle entity) throws RestException {
-//		List<Testsuite> testsuites = entity.getTestsuites();
-		List<Testsuite> testsuites = testsuiteRepository.findAllByTestcycleId(entity.getId());
-		if(testsuites!=null && testsuites.size()>0){
-			throw new RestException("Cannot delete testcycle by id '"+entity.getId()+"', there are still testsuites depeding on it!", HttpStatus.FAILED_DEPENDENCY);
+		String me = entity.getClass().getName();
+		//'Testsuite' depends on me.
+		String dependent = Testsuite.class.getName();
+		if(!testsuiteRepository.findAllByTestcycleId(entity.getId()).isEmpty()){
+			throw new RestException("Cannot delete "+me+" by id '"+entity.getId()+"', there are still "+dependent+"s depending on it!", HttpStatus.FAILED_DEPENDENCY);
 		}
 	}
 

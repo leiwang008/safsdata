@@ -16,7 +16,7 @@ drop table if exists machine;
 drop table if exists user;
 
 /**
- * 'user' will be refered in table 'usage'.
+ * 'user' will be referred in table 'usage'.
  */
 create table if not exists user (
 	/*id int not null auto_increment,*/
@@ -29,7 +29,7 @@ create table if not exists user (
 
 /**
  * Machine information will be captured when running SAFS Test and will be sent to SAFS Data Service
- * 'machine' will be refered in table 'usage'.
+ * 'machine' will be referred in table 'usage'.
  */
 create table if not exists machine (
 	id int not null auto_increment,
@@ -42,7 +42,7 @@ create table if not exists machine (
 
 /**
  * The pair (name, version) should be unique.
- * 'framework' will be refered in table 'usage'.
+ * 'framework' will be referred in table 'usage'.
  */
 create table if not exists framework (
 	id int not null auto_increment,
@@ -55,7 +55,7 @@ create table if not exists framework (
 
 /**
  * The pair (name, version) should be unique
- * 'engine' will be refered in table 'usage'.
+ * 'engine' will be referred in table 'usage'.
  */
 create table if not exists engine (
 	id int not null auto_increment,
@@ -87,7 +87,7 @@ create table if not exists usage (
 
 /**
  * This might be something that user create/modify/delete from the page. We can provide a page for that purpose.
- * 'orderable' will be refered in table 'testcycle'.
+ * 'orderable' will be referred in table 'testcycle'.
  */
 create table if not exists orderable (
 	id int not null auto_increment,
@@ -100,7 +100,7 @@ create table if not exists orderable (
 );
 
 /**
- * 'status' will be refered by table 'teststep'
+ * 'status' will be referred by table 'teststep'
  * 
  * How we define the type code?
  * 0 - Success

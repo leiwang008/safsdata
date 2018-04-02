@@ -16,12 +16,12 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import org.safs.data.exception.RestException;
-import org.safs.data.model.Usage;
-import org.safs.data.model.User;
-import org.safs.data.repository.UsageRepository;
-import org.safs.data.repository.UserRepository;
-import org.safs.data.resource.UserResource;
-import org.safs.data.resource.UserResourceAssembler;
+import org.safs.data.model.Orderable;
+import org.safs.data.model.Testcycle;
+import org.safs.data.repository.OrderableRepository;
+import org.safs.data.repository.TestcycleRepository;
+import org.safs.data.resource.OrderableResource;
+import org.safs.data.resource.OrderableResourceAssembler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,55 +45,55 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @CrossOrigin(origins="*")
 @RestController
-@ExposesResourceFor(User.class)
-@RequestMapping(value=User.REST_BASE_PATH, produces=MediaType.APPLICATION_JSON_VALUE)
-public class UserController implements Verifier<User>{
-	private static final Logger log = LoggerFactory.getLogger(UserController.class);
+@ExposesResourceFor(Orderable.class)
+@RequestMapping(value=Orderable.REST_BASE_PATH, produces=MediaType.APPLICATION_JSON_VALUE)
+public class OrderableController implements Verifier<Orderable>{
+	private static final Logger log = LoggerFactory.getLogger(OrderableController.class);
 
 	@Autowired
-	private UserRepository userRepository;
+	private OrderableRepository orderableRepository;
 	@Autowired
-	private UsageRepository usageRepository;
+	private TestcycleRepository testcycleRepository;
 
 	@Autowired
-	private UserResourceAssembler assembler;
+	private OrderableResourceAssembler assembler;
 
 	//================================== REST APIs controller ============================================
 	@GetMapping
-	public ResponseEntity<Collection<UserResource>> findAll(){
-		Iterable<User> elements = userRepository.findAll();
-		Collection<UserResource> resources = assembler.toResourceCollection(elements);
+	public ResponseEntity<Collection<OrderableResource>> findAll(){
+		Iterable<Orderable> elements = orderableRepository.findAll();
+		Collection<OrderableResource> resources = assembler.toResourceCollection(elements);
 		return new ResponseEntity<>(resources, HttpStatus.OK);
 	}
 
 	@PostMapping(consumes=MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<UserResource> put(@RequestBody User body){
+	public ResponseEntity<OrderableResource> put(@RequestBody Orderable body){
 		try{
-			Optional<User> element = userRepository.findById(body.getId());
+			Optional<Orderable> element = orderableRepository.findById(body.getId());
 			return new ResponseEntity<>(assembler.toResource(element.get()), HttpStatus.FOUND);
 		}catch(NoSuchElementException nse){
 			verifyDependenciesExist(body);
-			User o = userRepository.save(body);
-			log.debug(User.class.getName()+" has been created in the repository.");
+			Orderable o = orderableRepository.save(body);
+			log.debug(Orderable.class.getName()+" has been created in the repository.");
 			return new ResponseEntity<>(assembler.toResource(o), HttpStatus.CREATED);
 		}
 	}
 
 	@GetMapping(value="{id}")
-	public ResponseEntity<UserResource> find(@PathVariable String id){
+	public ResponseEntity<OrderableResource> find(@PathVariable Long id){
 		try{
-			Optional<User> element = userRepository.findById(id);
+			Optional<Orderable> element = orderableRepository.findById(id);
 			return new ResponseEntity<>(assembler.toResource(element.get()), HttpStatus.OK);
 		}catch(NoSuchElementException nse){
-			throw new RestException("Failed to find "+User.class.getName()+" by id '"+id+"'", HttpStatus.NOT_FOUND);
+			throw new RestException("Failed to find "+Orderable.class.getName()+" by id '"+id+"'", HttpStatus.NOT_FOUND);
 		}
 	}
 
 	@DeleteMapping(value="{id}")
-	public ResponseEntity<UserResource> delete(@PathVariable String id){
+	public ResponseEntity<OrderableResource> delete(@PathVariable Long id){
 		try{
-			verifyDependentsNotExist(userRepository.findById(id).get());
-			userRepository.deleteById(id);
+			verifyDependentsNotExist(orderableRepository.findById(id).get());
+			orderableRepository.deleteById(id);
 			return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
 		}catch(NoSuchElementException e){
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
@@ -101,29 +101,29 @@ public class UserController implements Verifier<User>{
 	}
 
 	@PutMapping(value="{id}")
-	public ResponseEntity<UserResource> update(@PathVariable String id, @RequestBody User body){
-		if(!userRepository.existsById(id)){
+	public ResponseEntity<OrderableResource> update(@PathVariable Long id, @RequestBody Orderable body){
+		if(!orderableRepository.existsById(id)){
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 		}else{
-			User original = userRepository.findById(id).get();
+			Orderable original = orderableRepository.findById(id).get();
 			original.update(body);
 			verifyDependenciesExist(original);
-			userRepository.save(original);
+			orderableRepository.save(original);
 			return new ResponseEntity<>(assembler.toResource(original), HttpStatus.OK);
 		}
 	}
 
 	@Override
-	public void verifyDependenciesExist(User entity) throws RestException {
+	public void verifyDependenciesExist(Orderable entity) throws RestException {
 		//depends on nothing
 	}
 
 	@Override
-	public void verifyDependentsNotExist(User entity) throws RestException {
+	public void verifyDependentsNotExist(Orderable entity) throws RestException {
 		String me = entity.getClass().getName();
-		//'Usage' depends on me.
-		String dependent = Usage.class.getName();
-		if(!usageRepository.findAllByUserId(entity.getId()).isEmpty()){
+		//'Testcycle' depends on me.
+		String dependent = Testcycle.class.getName();
+		if(!testcycleRepository.findAllByOrderableId(entity.getId()).isEmpty()){
 			throw new RestException("Cannot delete "+me+" by id '"+entity.getId()+"', there are still "+dependent+"s depending on it!", HttpStatus.FAILED_DEPENDENCY);
 		}
 	}

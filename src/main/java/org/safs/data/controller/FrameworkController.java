@@ -8,23 +8,20 @@
  *
  * History:
  * @date 2018-03-22    (Lei Wang) Initial release.
- * @date 2018-03-30    (Lei Wang) Used constant to specify the path for annotation @RequestMapping
- *                                Removed the leading "/" for the path in each request-method, it is relative to the path of this class annotated with @RequestMapping(value=xxx).
  */
 package org.safs.data.controller;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import org.jboss.jandex.TypeTarget.Usage;
 import org.safs.data.exception.RestException;
-import org.safs.data.model.Machine;
-import org.safs.data.repository.MachineRepository;
+import org.safs.data.model.Framework;
+import org.safs.data.repository.FrameworkRepository;
 import org.safs.data.repository.UsageRepository;
-import org.safs.data.resource.MachineResource;
-import org.safs.data.resource.MachineResourceAssembler;
+import org.safs.data.resource.FrameworkResource;
+import org.safs.data.resource.FrameworkResourceAssembler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,57 +45,55 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @CrossOrigin(origins="*")
 @RestController
-@ExposesResourceFor(Machine.class)
-@RequestMapping(value=Machine.REST_BASE_PATH, produces=MediaType.APPLICATION_JSON_VALUE)
-public class MachineController implements Verifier<Machine>{
-	private static final Logger log = LoggerFactory.getLogger(MachineController.class);
+@ExposesResourceFor(Framework.class)
+@RequestMapping(value=Framework.REST_BASE_PATH, produces=MediaType.APPLICATION_JSON_VALUE)
+public class FrameworkController implements Verifier<Framework>{
+	private static final Logger log = LoggerFactory.getLogger(FrameworkController.class);
 
 	@Autowired
-	private MachineRepository machineRepository;
+	private FrameworkRepository frameworkRepository;
 	@Autowired
 	private UsageRepository usageRepository;
 
 	@Autowired
-	private MachineResourceAssembler assembler;
+	private FrameworkResourceAssembler assembler;
 
 	//================================== REST APIs controller ============================================
 	@GetMapping
-	public ResponseEntity<Collection<MachineResource>> findAll(){
-		Iterable<Machine> elements = machineRepository.findAll();
-		Collection<MachineResource> resources = assembler.toResourceCollection(elements);
+	public ResponseEntity<Collection<FrameworkResource>> findAll(){
+		Iterable<Framework> elements = frameworkRepository.findAll();
+		Collection<FrameworkResource> resources = assembler.toResourceCollection(elements);
 		return new ResponseEntity<>(resources, HttpStatus.OK);
 	}
 
 	@PostMapping(consumes=MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<MachineResource> put(@RequestBody Machine body){
-		//Since the machine's (name, ip) pair is unique, we will check if the machine exists or not before saving it.
-		List<Machine> machines = machineRepository.findByNameAndIp(body.getName(), body.getIp());
-		if(machines!=null && !machines.isEmpty()){
-			log.debug(Machine.class.getName()+" has alredy existed in the repository.");
-			return new ResponseEntity<>(assembler.toResource(machines.get(0)), HttpStatus.FOUND);
-		}else{
+	public ResponseEntity<FrameworkResource> put(@RequestBody Framework body){
+		try{
+			Optional<Framework> element = frameworkRepository.findById(body.getId());
+			return new ResponseEntity<>(assembler.toResource(element.get()), HttpStatus.FOUND);
+		}catch(NoSuchElementException nse){
 			verifyDependenciesExist(body);
-			Machine o = machineRepository.save(body);
-			log.debug(Machine.class.getName()+" has been created in the repository.");
+			Framework o = frameworkRepository.save(body);
+			log.debug(Framework.class.getName()+" has been created in the repository.");
 			return new ResponseEntity<>(assembler.toResource(o), HttpStatus.CREATED);
 		}
 	}
 
 	@GetMapping(value="{id}")
-	public ResponseEntity<MachineResource> find(@PathVariable Long id){
+	public ResponseEntity<FrameworkResource> find(@PathVariable Long id){
 		try{
-			Optional<Machine> element = machineRepository.findById(id);
+			Optional<Framework> element = frameworkRepository.findById(id);
 			return new ResponseEntity<>(assembler.toResource(element.get()), HttpStatus.OK);
 		}catch(NoSuchElementException nse){
-			throw new RestException("Failed to find "+Machine.class.getName()+" by id '"+id+"'", HttpStatus.NOT_FOUND);
+			throw new RestException("Failed to find "+Framework.class.getName()+" by id '"+id+"'", HttpStatus.NOT_FOUND);
 		}
 	}
 
 	@DeleteMapping(value="{id}")
-	public ResponseEntity<MachineResource> delete(@PathVariable Long id){
+	public ResponseEntity<FrameworkResource> delete(@PathVariable Long id){
 		try{
-			verifyDependentsNotExist(machineRepository.findById(id).get());
-			machineRepository.deleteById(id);
+			verifyDependentsNotExist(frameworkRepository.findById(id).get());
+			frameworkRepository.deleteById(id);
 			return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
 		}catch(NoSuchElementException e){
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
@@ -106,25 +101,25 @@ public class MachineController implements Verifier<Machine>{
 	}
 
 	@PutMapping(value="{id}")
-	public ResponseEntity<MachineResource> update(@PathVariable Long id, @RequestBody Machine body){
-		if(!machineRepository.existsById(id)){
+	public ResponseEntity<FrameworkResource> update(@PathVariable Long id, @RequestBody Framework body){
+		if(!frameworkRepository.existsById(id)){
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 		}else{
-			Machine original = machineRepository.findById(id).get();
+			Framework original = frameworkRepository.findById(id).get();
 			original.update(body);
 			verifyDependenciesExist(original);
-			machineRepository.save(original);
+			frameworkRepository.save(original);
 			return new ResponseEntity<>(assembler.toResource(original), HttpStatus.OK);
 		}
 	}
 
 	@Override
-	public void verifyDependenciesExist(Machine entity) throws RestException {
+	public void verifyDependenciesExist(Framework entity) throws RestException {
 		//depends on nothing
 	}
 
 	@Override
-	public void verifyDependentsNotExist(Machine entity) throws RestException {
+	public void verifyDependentsNotExist(Framework entity) throws RestException {
 		String me = entity.getClass().getName();
 		//'Usage' depends on me.
 		String dependent = Usage.class.getName();
