@@ -20,5 +20,5 @@ import org.springframework.stereotype.Repository;
  *
  */
 @Repository
-public interface OrderableRepository extends CrudRepository<Orderable, Long/*Id is the string type*/>{
+public interface OrderableRepository extends CrudRepository<Orderable, Long>{
 }

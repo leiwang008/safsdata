@@ -24,7 +24,7 @@ import org.springframework.stereotype.Repository;
  *
  */
 @Repository
-public interface HistoryRepository extends CrudRepository<History, Long/*Id is the string type*/>{
+public interface HistoryRepository extends CrudRepository<History, Long>{
 	@Query("delete from History i where i.frameworkId=:frameworkId")
 	public boolean deleteByFrameworkId(@Param("frameworkId") Long frameworkId);
 
