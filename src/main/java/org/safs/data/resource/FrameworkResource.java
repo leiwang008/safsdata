@@ -18,7 +18,7 @@ import org.safs.data.model.Framework;
  *
  */
 public class FrameworkResource extends UpdatableDefaultForResource<Framework>{
-	private String id;
+	private Long id;
 
 	private String name;
 	private String version;
@@ -30,7 +30,7 @@ public class FrameworkResource extends UpdatableDefaultForResource<Framework>{
 	/**
 	 * @return the id
 	 */
-	public String getId() {
+	public Long getId() {
 		return id;
 	}
 	/**

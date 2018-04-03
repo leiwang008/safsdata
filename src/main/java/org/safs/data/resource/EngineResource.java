@@ -18,7 +18,7 @@ import org.safs.data.model.Engine;
  *
  */
 public class EngineResource extends UpdatableDefaultForResource<Engine>{
-	private String id;
+	private Long id;
 
 	private String name;
 	private String version;
@@ -30,7 +30,7 @@ public class EngineResource extends UpdatableDefaultForResource<Engine>{
 	/**
 	 * @return the id
 	 */
-	public String getId() {
+	public Long getId() {
 		return id;
 	}
 	/**
