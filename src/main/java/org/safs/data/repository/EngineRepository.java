@@ -11,6 +11,8 @@
  */
 package org.safs.data.repository;
 
+import java.util.List;
+
 import org.safs.data.model.Engine;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
@@ -20,5 +22,7 @@ import org.springframework.stereotype.Repository;
  *
  */
 @Repository
-public interface EngineRepository extends CrudRepository<Engine, Long/*Id is the string type*/>{
+public interface EngineRepository extends CrudRepository<Engine, Long>{
+//	@Query("select i from Engine i where i.name=:name and i.version=:version")
+	public List<Engine> findByNameAndVersion(String name, String version);
 }

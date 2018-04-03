@@ -12,6 +12,7 @@
 package org.safs.data.controller;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
@@ -68,10 +69,11 @@ public class EngineController implements Verifier<Engine>{
 
 	@PostMapping(consumes=MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<EngineResource> put(@RequestBody Engine body){
-		try{
-			Optional<Engine> element = engineRepository.findById(body.getId());
-			return new ResponseEntity<>(assembler.toResource(element.get()), HttpStatus.FOUND);
-		}catch(NoSuchElementException nse){
+		List<Engine> elements = engineRepository.findByNameAndVersion(body.getName(), body.getVersion());
+		if(elements!=null && !elements.isEmpty()){
+			log.debug(Engine.class.getName()+" has alredy existed in the repository.");
+			return new ResponseEntity<>(assembler.toResource(elements.get(0)), HttpStatus.FOUND);
+		}else{
 			verifyDependenciesExist(body);
 			Engine o = engineRepository.save(body);
 			log.debug(Engine.class.getName()+" has been created in the repository.");

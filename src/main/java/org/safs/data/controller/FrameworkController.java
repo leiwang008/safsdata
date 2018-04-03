@@ -12,6 +12,7 @@
 package org.safs.data.controller;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
@@ -68,10 +69,12 @@ public class FrameworkController implements Verifier<Framework>{
 
 	@PostMapping(consumes=MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<FrameworkResource> put(@RequestBody Framework body){
-		try{
-			Optional<Framework> element = frameworkRepository.findById(body.getId());
-			return new ResponseEntity<>(assembler.toResource(element.get()), HttpStatus.FOUND);
-		}catch(NoSuchElementException nse){
+		List<Framework> elements = frameworkRepository.findByNameAndVersion(body.getName(), body.getVersion());
+
+		if(elements!=null && !elements.isEmpty()){
+			log.debug(Framework.class.getName()+" has alredy existed in the repository.");
+			return new ResponseEntity<>(assembler.toResource(elements.get(0)), HttpStatus.FOUND);
+		}else{
 			verifyDependenciesExist(body);
 			Framework o = frameworkRepository.save(body);
 			log.debug(Framework.class.getName()+" has been created in the repository.");
