@@ -15,11 +15,11 @@ import java.util.Collection;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
-import org.jboss.jandex.TypeTarget.Usage;
 import org.safs.data.exception.RestException;
 import org.safs.data.model.Framework;
+import org.safs.data.model.History;
 import org.safs.data.repository.FrameworkRepository;
-import org.safs.data.repository.UsageRepository;
+import org.safs.data.repository.HistoryRepository;
 import org.safs.data.resource.FrameworkResource;
 import org.safs.data.resource.FrameworkResourceAssembler;
 import org.slf4j.Logger;
@@ -53,7 +53,7 @@ public class FrameworkController implements Verifier<Framework>{
 	@Autowired
 	private FrameworkRepository frameworkRepository;
 	@Autowired
-	private UsageRepository usageRepository;
+	private HistoryRepository historyRepository;
 
 	@Autowired
 	private FrameworkResourceAssembler assembler;
@@ -121,9 +121,9 @@ public class FrameworkController implements Verifier<Framework>{
 	@Override
 	public void verifyDependentsNotExist(Framework entity) throws RestException {
 		String me = entity.getClass().getName();
-		//'Usage' depends on me.
-		String dependent = Usage.class.getName();
-		if(!usageRepository.findAllByMachineId(entity.getId()).isEmpty()){
+		//'History' depends on me.
+		String dependent = History.class.getName();
+		if(!historyRepository.findAllByFrameworkId(entity.getId()).isEmpty()){
 			throw new RestException("Cannot delete "+me+" by id '"+entity.getId()+"', there are still "+dependent+"s depending on it!", HttpStatus.FAILED_DEPENDENCY);
 		}
 	}

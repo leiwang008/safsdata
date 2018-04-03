@@ -16,9 +16,9 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import org.safs.data.exception.RestException;
-import org.safs.data.model.Usage;
+import org.safs.data.model.History;
 import org.safs.data.model.User;
-import org.safs.data.repository.UsageRepository;
+import org.safs.data.repository.HistoryRepository;
 import org.safs.data.repository.UserRepository;
 import org.safs.data.resource.UserResource;
 import org.safs.data.resource.UserResourceAssembler;
@@ -53,7 +53,7 @@ public class UserController implements Verifier<User>{
 	@Autowired
 	private UserRepository userRepository;
 	@Autowired
-	private UsageRepository usageRepository;
+	private HistoryRepository historyRepository;
 
 	@Autowired
 	private UserResourceAssembler assembler;
@@ -121,9 +121,9 @@ public class UserController implements Verifier<User>{
 	@Override
 	public void verifyDependentsNotExist(User entity) throws RestException {
 		String me = entity.getClass().getName();
-		//'Usage' depends on me.
-		String dependent = Usage.class.getName();
-		if(!usageRepository.findAllByUserId(entity.getId()).isEmpty()){
+		//'History' depends on me.
+		String dependent = History.class.getName();
+		if(!historyRepository.findAllByUserId(entity.getId()).isEmpty()){
 			throw new RestException("Cannot delete "+me+" by id '"+entity.getId()+"', there are still "+dependent+"s depending on it!", HttpStatus.FAILED_DEPENDENCY);
 		}
 	}

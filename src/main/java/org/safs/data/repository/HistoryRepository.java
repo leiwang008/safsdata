@@ -13,7 +13,7 @@ package org.safs.data.repository;
 
 import java.util.List;
 
-import org.safs.data.model.Usage;
+import org.safs.data.model.History;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
@@ -24,29 +24,29 @@ import org.springframework.stereotype.Repository;
  *
  */
 @Repository
-public interface UsageRepository extends CrudRepository<Usage, Long/*Id is the string type*/>{
-	@Query("delete from Usage i where i.frameworkId=:frameworkId")
+public interface HistoryRepository extends CrudRepository<History, Long/*Id is the string type*/>{
+	@Query("delete from History i where i.frameworkId=:frameworkId")
 	public boolean deleteByFrameworkId(@Param("frameworkId") Long frameworkId);
 
-	@Query("select i from Usage i where i.frameworkId=:frameworkId")
-	public List<Usage> findAllByFrameworkId(@Param("frameworkId") Long frameworkId);
+	@Query("select i from History i where i.frameworkId=:frameworkId")
+	public List<History> findAllByFrameworkId(@Param("frameworkId") Long frameworkId);
 
-	@Query("delete from Usage i where i.engineId=:engineId")
+	@Query("delete from History i where i.engineId=:engineId")
 	public boolean deleteByEngineId(@Param("engineId") Long engineId);
 
-	@Query("select i from Usage i where i.engineId=:engineId")
-	public List<Usage> findAllByEngineId(@Param("engineId") Long engineId);
+	@Query("select i from History i where i.engineId=:engineId")
+	public List<History> findAllByEngineId(@Param("engineId") Long engineId);
 
-	@Query("delete from Usage i where i.userId=:userId")
+	@Query("delete from History i where i.userId=:userId")
 	public boolean deleteByUserId(@Param("userId") String userId);
 
-	@Query("select i from Usage i where i.userId=:userId")
-	public List<Usage> findAllByUserId(@Param("userId") String userId);
+	@Query("select i from History i where i.userId=:userId")
+	public List<History> findAllByUserId(@Param("userId") String userId);
 
-	@Query("delete from Usage i where i.machineId=:machineId")
+	@Query("delete from History i where i.machineId=:machineId")
 	public boolean deleteByMachinekId(@Param("machineId") Long machineId);
 
-	@Query("select i from Usage i where i.machineId=:machineId")
-	public List<Usage> findAllByMachineId(@Param("machineId") Long machineId);
+	@Query("select i from History i where i.machineId=:machineId")
+	public List<History> findAllByMachineId(@Param("machineId") Long machineId);
 
 }

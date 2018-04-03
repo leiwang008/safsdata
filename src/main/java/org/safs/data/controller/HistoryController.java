@@ -19,15 +19,15 @@ import org.apache.catalina.User;
 import org.safs.data.exception.RestException;
 import org.safs.data.model.Engine;
 import org.safs.data.model.Framework;
+import org.safs.data.model.History;
 import org.safs.data.model.Machine;
-import org.safs.data.model.Usage;
 import org.safs.data.repository.EngineRepository;
 import org.safs.data.repository.FrameworkRepository;
+import org.safs.data.repository.HistoryRepository;
 import org.safs.data.repository.MachineRepository;
-import org.safs.data.repository.UsageRepository;
 import org.safs.data.repository.UserRepository;
-import org.safs.data.resource.UsageResource;
-import org.safs.data.resource.UsageResourceAssembler;
+import org.safs.data.resource.HistoryResource;
+import org.safs.data.resource.HistoryResourceAssembler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,13 +51,13 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @CrossOrigin(origins="*")
 @RestController
-@ExposesResourceFor(Usage.class)
-@RequestMapping(value=Usage.REST_BASE_PATH, produces=MediaType.APPLICATION_JSON_VALUE)
-public class UsageController implements Verifier<Usage>{
-	private static final Logger log = LoggerFactory.getLogger(UsageController.class);
+@ExposesResourceFor(History.class)
+@RequestMapping(value=History.REST_BASE_PATH, produces=MediaType.APPLICATION_JSON_VALUE)
+public class HistoryController implements Verifier<History>{
+	private static final Logger log = LoggerFactory.getLogger(HistoryController.class);
 
 	@Autowired
-	private UsageRepository usageRepository;
+	private HistoryRepository historyRepository;
 	@Autowired
 	private MachineRepository machineRepository;
 	@Autowired
@@ -68,45 +68,45 @@ public class UsageController implements Verifier<Usage>{
 	private EngineRepository engineRepository;
 
 	@Autowired
-	private UsageResourceAssembler assembler;
+	private HistoryResourceAssembler assembler;
 
 	//================================== REST APIs controller ============================================
 	@GetMapping
-	public ResponseEntity<Collection<UsageResource>> findAll(){
-		Iterable<Usage> elements = usageRepository.findAll();
-		Collection<UsageResource> resources = assembler.toResourceCollection(elements);
+	public ResponseEntity<Collection<HistoryResource>> findAll(){
+		Iterable<History> elements = historyRepository.findAll();
+		Collection<HistoryResource> resources = assembler.toResourceCollection(elements);
 		return new ResponseEntity<>(resources, HttpStatus.OK);
 	}
 
 	@PostMapping(consumes=MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<UsageResource> put(@RequestBody Usage body){
+	public ResponseEntity<HistoryResource> put(@RequestBody History body){
 		verifyDependenciesExist(body);
 
 		try{
-			Optional<Usage> element = usageRepository.findById(body.getId());
+			Optional<History> element = historyRepository.findById(body.getId());
 			return new ResponseEntity<>(assembler.toResource(element.get()), HttpStatus.FOUND);
 		}catch(NoSuchElementException nse){
-			Usage o = usageRepository.save(body);
-			log.debug(Usage.class.getName()+" has been created in the repository.");
+			History o = historyRepository.save(body);
+			log.debug(History.class.getName()+" has been created in the repository.");
 			return new ResponseEntity<>(assembler.toResource(o), HttpStatus.CREATED);
 		}
 	}
 
 	@GetMapping(value="{id}")
-	public ResponseEntity<UsageResource> find(@PathVariable Long id){
+	public ResponseEntity<HistoryResource> find(@PathVariable Long id){
 		try{
-			Optional<Usage> element = usageRepository.findById(id);
+			Optional<History> element = historyRepository.findById(id);
 			return new ResponseEntity<>(assembler.toResource(element.get()), HttpStatus.OK);
 		}catch(NoSuchElementException nse){
-			throw new RestException("Failed to find "+Usage.class.getName()+" by id '"+id+"'", HttpStatus.NOT_FOUND);
+			throw new RestException("Failed to find "+History.class.getName()+" by id '"+id+"'", HttpStatus.NOT_FOUND);
 		}
 	}
 
 	@DeleteMapping(value="{id}")
-	public ResponseEntity<UsageResource> delete(@PathVariable Long id){
+	public ResponseEntity<HistoryResource> delete(@PathVariable Long id){
 		try{
-			verifyDependentsNotExist(usageRepository.findById(id).get());
-			usageRepository.deleteById(id);
+			verifyDependentsNotExist(historyRepository.findById(id).get());
+			historyRepository.deleteById(id);
 			return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
 		}catch(NoSuchElementException e){
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
@@ -114,21 +114,21 @@ public class UsageController implements Verifier<Usage>{
 	}
 
 	@PutMapping(value="{id}")
-	public ResponseEntity<UsageResource> update(@PathVariable Long id, @RequestBody Usage body){
+	public ResponseEntity<HistoryResource> update(@PathVariable Long id, @RequestBody History body){
 
-		if(!usageRepository.existsById(id)){
+		if(!historyRepository.existsById(id)){
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 		}else{
-			Usage original = usageRepository.findById(id).get();
+			History original = historyRepository.findById(id).get();
 			original.update(body);
 			verifyDependenciesExist(original);
-			usageRepository.save(original);
+			historyRepository.save(original);
 			return new ResponseEntity<>(assembler.toResource(original), HttpStatus.OK);
 		}
 	}
 
 	@Override
-	public void verifyDependenciesExist(Usage entity) throws RestException {
+	public void verifyDependenciesExist(History entity) throws RestException {
 		//user, machine, framework and engine depend on me.
 		String me = entity.getClass().getName();
 		String dependency = null;
@@ -159,8 +159,8 @@ public class UsageController implements Verifier<Usage>{
 	}
 
 	@Override
-	public void verifyDependentsNotExist(Usage entity) throws RestException {
-		//Nothing depends on Usage
+	public void verifyDependentsNotExist(History entity) throws RestException {
+		//Nothing depends on History
 	}
 
 }

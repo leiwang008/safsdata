@@ -13,13 +13,13 @@ package org.safs.data.resource;
 
 import java.util.Date;
 
-import org.safs.data.model.Usage;
+import org.safs.data.model.History;
 
 /**
  * @author Lei Wang
  *
  */
-public class UsageResource extends UpdatableDefaultForResource<Usage>{
+public class HistoryResource extends UpdatableDefaultForResource<History>{
 	private Long id;
 
 	private Long machineId;
@@ -29,7 +29,7 @@ public class UsageResource extends UpdatableDefaultForResource<Usage>{
 	private Date timestamp;
 	private String commandLine;
 
-	public UsageResource(Usage o){
+	public HistoryResource(History o){
 		update(o);
 	}
 

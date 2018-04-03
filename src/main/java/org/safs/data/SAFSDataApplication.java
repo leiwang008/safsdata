@@ -17,7 +17,7 @@ import org.safs.data.repository.TestcaseRepository;
 import org.safs.data.repository.TestcycleRepository;
 import org.safs.data.repository.TeststepRepository;
 import org.safs.data.repository.TestsuiteRepository;
-import org.safs.data.repository.UsageRepository;
+import org.safs.data.repository.HistoryRepository;
 import org.safs.data.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -62,7 +62,7 @@ public class SAFSDataApplication extends SpringBootServletInitializer {
 	@Autowired
 	private UserRepository userRep;
 	@Autowired
-	private UsageRepository usageRep;
+	private HistoryRepository historyRep;
 
 	@Autowired
 	private OrderableRepository orderableRep;
@@ -85,7 +85,7 @@ public class SAFSDataApplication extends SpringBootServletInitializer {
 		repositories.add(engineRep);
 		repositories.add(machineRep);
 		repositories.add(userRep);
-//		repositories.add(usageRep);
+		repositories.add(historyRep);
 
 		repositories.add(orderableRep);
 		repositories.add(statusRep);

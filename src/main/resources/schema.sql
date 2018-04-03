@@ -9,14 +9,14 @@ drop table if exists testcycle;
 drop table if exists status;
 drop table if exists orderable;
 
-drop table if exists usage;
+drop table if exists history;
 drop table if exists engine;
 drop table if exists framework;
 drop table if exists machine;
 drop table if exists user;
 
 /**
- * 'user' will be referred in table 'usage'.
+ * 'user' will be referred in table 'history'.
  */
 create table if not exists user (
 	/*id int not null auto_increment,*/
@@ -29,7 +29,7 @@ create table if not exists user (
 
 /**
  * Machine information will be captured when running SAFS Test and will be sent to SAFS Data Service
- * 'machine' will be referred in table 'usage'.
+ * 'machine' will be referred in table 'history'.
  */
 create table if not exists machine (
 	id int not null auto_increment,
@@ -42,7 +42,7 @@ create table if not exists machine (
 
 /**
  * The pair (name, version) should be unique.
- * 'framework' will be referred in table 'usage'.
+ * 'framework' will be referred in table 'history'.
  */
 create table if not exists framework (
 	id int not null auto_increment,
@@ -55,7 +55,7 @@ create table if not exists framework (
 
 /**
  * The pair (name, version) should be unique
- * 'engine' will be referred in table 'usage'.
+ * 'engine' will be referred in table 'history'.
  */
 create table if not exists engine (
 	id int not null auto_increment,
@@ -69,7 +69,7 @@ create table if not exists engine (
 /**
  * This table will track down use of SAFS, SeleniumPlus etc.
  */
-create table if not exists usage (
+create table if not exists history (
 	id int not null auto_increment,
 	framework_id int,
 	engine_id int,

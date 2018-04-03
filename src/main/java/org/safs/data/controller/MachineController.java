@@ -18,11 +18,11 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
-import org.jboss.jandex.TypeTarget.Usage;
 import org.safs.data.exception.RestException;
+import org.safs.data.model.History;
 import org.safs.data.model.Machine;
+import org.safs.data.repository.HistoryRepository;
 import org.safs.data.repository.MachineRepository;
-import org.safs.data.repository.UsageRepository;
 import org.safs.data.resource.MachineResource;
 import org.safs.data.resource.MachineResourceAssembler;
 import org.slf4j.Logger;
@@ -56,7 +56,7 @@ public class MachineController implements Verifier<Machine>{
 	@Autowired
 	private MachineRepository machineRepository;
 	@Autowired
-	private UsageRepository usageRepository;
+	private HistoryRepository historyRepository;
 
 	@Autowired
 	private MachineResourceAssembler assembler;
@@ -126,9 +126,9 @@ public class MachineController implements Verifier<Machine>{
 	@Override
 	public void verifyDependentsNotExist(Machine entity) throws RestException {
 		String me = entity.getClass().getName();
-		//'Usage' depends on me.
-		String dependent = Usage.class.getName();
-		if(!usageRepository.findAllByMachineId(entity.getId()).isEmpty()){
+		//'History' depends on me.
+		String dependent = History.class.getName();
+		if(!historyRepository.findAllByMachineId(entity.getId()).isEmpty()){
 			throw new RestException("Cannot delete "+me+" by id '"+entity.getId()+"', there are still "+dependent+"s depending on it!", HttpStatus.FAILED_DEPENDENCY);
 		}
 	}
