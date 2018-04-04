@@ -8,6 +8,7 @@
  *
  * History:
  * @date 2018-03-22    (Lei Wang) Initial release.
+ * @date 2018-04-04    (Lei Wang) Renamed method put() to create(); don't check id and always save it to database.
  */
 package org.safs.data.controller;
 
@@ -79,17 +80,12 @@ public class HistoryController implements Verifier<History>{
 	}
 
 	@PostMapping(consumes=MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<HistoryResource> put(@RequestBody History body){
+	public ResponseEntity<HistoryResource> create(@RequestBody History body){
 		verifyDependenciesExist(body);
 
-		try{
-			Optional<History> element = historyRepository.findById(body.getId());
-			return new ResponseEntity<>(assembler.toResource(element.get()), HttpStatus.FOUND);
-		}catch(NoSuchElementException nse){
-			History o = historyRepository.save(body);
-			log.debug(History.class.getName()+" has been created in the repository.");
-			return new ResponseEntity<>(assembler.toResource(o), HttpStatus.CREATED);
-		}
+		History o = historyRepository.save(body);
+		log.debug(History.class.getName()+" has been created in the repository.");
+		return new ResponseEntity<>(assembler.toResource(o), HttpStatus.CREATED);
 	}
 
 	@GetMapping(value="{id}")

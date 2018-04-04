@@ -70,7 +70,13 @@ public class MachineController implements Verifier<Machine>{
 	}
 
 	@PostMapping(consumes=MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<MachineResource> put(@RequestBody Machine body){
+	public ResponseEntity<MachineResource> create(@RequestBody Machine body){
+		//TODO
+		//org.springframework.dao.DataIntegrityViolationException: could not execute statement; SQL [n/a]; constraint [UKl2w0326a9aakpop55m113b4u8];
+		//nested exception is org.hibernate.exception.ConstraintViolationException: could not execute statement
+		//We may try to catch the ConstraintViolationException instead of checking the pair (name, ip) ourselves.
+		//But if the machine exist, we need to get its data from repository and return it.
+
 		//Since the machine's (name, ip) pair is unique, we will check if the machine exists or not before saving it.
 		List<Machine> machines = machineRepository.findByNameAndIp(body.getName(), body.getIp());
 		if(machines!=null && !machines.isEmpty()){

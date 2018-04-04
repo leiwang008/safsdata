@@ -11,6 +11,8 @@
  */
 package org.safs.data.repository;
 
+import java.util.List;
+
 import org.safs.data.model.Orderable;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
@@ -21,4 +23,6 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface OrderableRepository extends CrudRepository<Orderable, Long>{
+	//find Orderable by quadruplet("productName", "platform", "track", "branch")
+	public List<Orderable> findByProductNameAndPlatformAndTrackAndBranch(String productName, String platform, String track, String branch);
 }

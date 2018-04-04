@@ -8,10 +8,13 @@
  *
  * History:
  * @date 2018-03-22    (Lei Wang) Initial release.
+ * @date 2018-04-04    (Lei Wang) Renamed method put() to create(); check unique-constraint instead of id.
+ *
  */
 package org.safs.data.controller;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
@@ -67,16 +70,24 @@ public class OrderableController implements Verifier<Orderable>{
 	}
 
 	@PostMapping(consumes=MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<OrderableResource> put(@RequestBody Orderable body){
-		try{
-			Optional<Orderable> element = orderableRepository.findById(body.getId());
-			return new ResponseEntity<>(assembler.toResource(element.get()), HttpStatus.FOUND);
-		}catch(NoSuchElementException nse){
+	public ResponseEntity<OrderableResource> create(@RequestBody Orderable body){
+		//Since the orderable's (productName, platform, track, branch) quadruplet is unique, we will check if the orderable's exists or not before saving it.
+		List<Orderable> entities = orderableRepository.findByProductNameAndPlatformAndTrackAndBranch(
+				body.getProductName(), body.getPlatform(), body.getTrack(), body.getBranch());
+		if(entities!=null && !entities.isEmpty()){
+			log.debug(Orderable.class.getName()+" has alredy existed in the repository.");
+			return new ResponseEntity<>(assembler.toResource(entities.get(0)), HttpStatus.FOUND);
+		}else{
 			verifyDependenciesExist(body);
 			Orderable o = orderableRepository.save(body);
 			log.debug(Orderable.class.getName()+" has been created in the repository.");
 			return new ResponseEntity<>(assembler.toResource(o), HttpStatus.CREATED);
 		}
+		//If we don't care about returning the Orderable, we can let the hibernate to check the unique constraint
+//		verifyDependenciesExist(body);
+//		Orderable o = orderableRepository.save(body);
+//		log.debug(Orderable.class.getName()+" has been created in the repository.");
+//		return new ResponseEntity<>(assembler.toResource(o), HttpStatus.CREATED);
 	}
 
 	@GetMapping(value="{id}")

@@ -68,7 +68,7 @@ public class EngineController implements Verifier<Engine>{
 	}
 
 	@PostMapping(consumes=MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<EngineResource> put(@RequestBody Engine body){
+	public ResponseEntity<EngineResource> create(@RequestBody Engine body){
 		List<Engine> elements = engineRepository.findByNameAndVersion(body.getName(), body.getVersion());
 		if(elements!=null && !elements.isEmpty()){
 			log.debug(Engine.class.getName()+" has alredy existed in the repository.");

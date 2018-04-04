@@ -67,7 +67,7 @@ public class UserController implements Verifier<User>{
 	}
 
 	@PostMapping(consumes=MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<UserResource> put(@RequestBody User body){
+	public ResponseEntity<UserResource> create(@RequestBody User body){
 		try{
 			Optional<User> element = userRepository.findById(body.getId());
 			return new ResponseEntity<>(assembler.toResource(element.get()), HttpStatus.FOUND);

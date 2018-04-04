@@ -8,6 +8,7 @@
  *
  * History:
  * @date 2018-03-02    (Lei Wang) Initial release.
+ * @date 2018-04-04    (Lei Wang) Change field name 'product_name' to 'productName': use camel format.
  */
 package org.safs.data.resource;
 
@@ -20,7 +21,7 @@ import org.safs.data.model.Orderable;
 public class OrderableResource extends UpdatableDefaultForResource<Orderable>{
 	private Long id;
 
-	private String product_name;
+	private String productName;
 	private String platform;
 	private String track;
 	private String branch;
@@ -35,10 +36,10 @@ public class OrderableResource extends UpdatableDefaultForResource<Orderable>{
 		return id;
 	}
 	/**
-	 * @return the product_name
+	 * @return the productName
 	 */
-	public String getProduct_name() {
-		return product_name;
+	public String getProductName() {
+		return productName;
 	}
 	/**
 	 * @return the platform

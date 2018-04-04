@@ -68,7 +68,7 @@ public class FrameworkController implements Verifier<Framework>{
 	}
 
 	@PostMapping(consumes=MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<FrameworkResource> put(@RequestBody Framework body){
+	public ResponseEntity<FrameworkResource> create(@RequestBody Framework body){
 		List<Framework> elements = frameworkRepository.findByNameAndVersion(body.getName(), body.getVersion());
 
 		if(elements!=null && !elements.isEmpty()){
