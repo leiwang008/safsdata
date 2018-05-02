@@ -22,6 +22,7 @@ public class TestcaseResource extends UpdatableDefaultForResource<Testcase>{
 	private Long id;
 	private Long testsuiteId;
 	private String name;
+	private String classname;
 	private double time;
 
 	public TestcaseResource(Testcase o) {
@@ -51,5 +52,11 @@ public class TestcaseResource extends UpdatableDefaultForResource<Testcase>{
 	 */
 	public double getTime() {
 		return Util.keep2Decimal(time);
+	}
+	/**
+	 * @return the classname
+	 */
+	public String getClassname() {
+		return classname;
 	}
 }
