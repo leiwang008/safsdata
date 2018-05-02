@@ -8,6 +8,7 @@
  *
  * History:
  * @date 2018-03-06    (Lei Wang) Initial release.
+ * @date 2018-05-02    (Lei Wang) Modified method verifyDependenciesExist(): don't verify Orderable dependency.
  */
 package org.safs.data.controller;
 
@@ -20,7 +21,6 @@ import java.util.Optional;
 
 import org.safs.data.exception.RestException;
 import org.safs.data.model.ConstantPath;
-import org.safs.data.model.Orderable;
 import org.safs.data.model.Testcycle;
 import org.safs.data.model.Testsuite;
 import org.safs.data.repository.OrderableRepository;
@@ -128,8 +128,9 @@ public class TestcycleController implements Verifier<Testcycle> {
 		String dependency = null;
 		//It depends on 'Orderable'
 		try{
-			dependency = Orderable.class.getName();
-			orderableRepository.findById(entity.getOrderableId()).get();
+			//Currently we don't have this Orderable entity in our database, don't verify it.
+//			dependency = Orderable.class.getName();
+//			orderableRepository.findById(entity.getOrderableId()).get();
 		}catch(NoSuchElementException e){
 			throw new RestException("Cannot find "+dependency+" by ID '"+entity.getOrderableId()+"', so the "+me+" cannot be updated to refer to that "+dependency+".");
 		}
