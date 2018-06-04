@@ -2,6 +2,7 @@
 /**
  * History:
  * WangLei 28 MAR, 2018	Modified method demo(): print the data from repository in a general way.
+ * WangLei 04 JUN, 2018	Modified method demo(): print also HistoryEngine data.
  */
 package org.safs.data;
 
@@ -10,6 +11,8 @@ import java.util.List;
 
 import org.safs.data.repository.EngineRepository;
 import org.safs.data.repository.FrameworkRepository;
+import org.safs.data.repository.HistoryEngineRepository;
+import org.safs.data.repository.HistoryRepository;
 import org.safs.data.repository.MachineRepository;
 import org.safs.data.repository.OrderableRepository;
 import org.safs.data.repository.StatusRepository;
@@ -17,7 +20,6 @@ import org.safs.data.repository.TestcaseRepository;
 import org.safs.data.repository.TestcycleRepository;
 import org.safs.data.repository.TeststepRepository;
 import org.safs.data.repository.TestsuiteRepository;
-import org.safs.data.repository.HistoryRepository;
 import org.safs.data.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -63,6 +65,8 @@ public class SAFSDataApplication extends SpringBootServletInitializer {
 	private UserRepository userRep;
 	@Autowired
 	private HistoryRepository historyRep;
+	@Autowired
+	private HistoryEngineRepository historyEngineRepository;
 
 	@Autowired
 	private OrderableRepository orderableRep;
@@ -86,6 +90,7 @@ public class SAFSDataApplication extends SpringBootServletInitializer {
 		repositories.add(machineRep);
 		repositories.add(userRep);
 		repositories.add(historyRep);
+		repositories.add(historyEngineRepository);
 
 		repositories.add(orderableRep);
 		repositories.add(statusRep);

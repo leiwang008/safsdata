@@ -18,6 +18,7 @@ import java.util.List;
 import org.safs.data.model.Engine;
 import org.safs.data.model.Framework;
 import org.safs.data.model.History;
+import org.safs.data.model.HistoryEngine;
 import org.safs.data.model.Machine;
 import org.safs.data.model.Orderable;
 import org.safs.data.model.Status;
@@ -58,6 +59,7 @@ public class ExposedRestAPIController {
 		exposedAPI.add(new ExposedRestAPI(Framework.class.getSimpleName(), entityLinks.linkFor(Framework.class).withSelfRel().getHref()));
 		exposedAPI.add(new ExposedRestAPI(Engine.class.getSimpleName(), entityLinks.linkFor(Engine.class).withSelfRel().getHref()));
 		exposedAPI.add(new ExposedRestAPI(History.class.getSimpleName(), entityLinks.linkFor(History.class).withSelfRel().getHref()));
+		exposedAPI.add(new ExposedRestAPI(HistoryEngine.class.getSimpleName(), entityLinks.linkFor(HistoryEngine.class).withSelfRel().getHref()));
 
 		//For result
 		exposedAPI.add(new ExposedRestAPI(Orderable.class.getSimpleName(), entityLinks.linkFor(Orderable.class).withSelfRel().getHref()));

@@ -22,12 +22,11 @@ insert into engine(name, version, description) values ('RFT', '8.0', 'Rational F
 insert into engine(name, version, description) values ('TC', '8.0', 'Test Complete');
 insert into engine(name, version, description) values ('Selenium', '3.4.0', 'Selenium standalone server');
 
+insert into history (framework_id, user_id, machine_id, test_name, begin_timestamp, end_timestamp, command_line) values (2, 1, 2, 'VA Test', '2018-02-22T09:35:15', '2018-02-22T09:58:15', '"c:\\seleniumplus\\Java\\jre\\bin\\java.exe"  -cp "c:\\seleniumplus\\libs\\seleniumplus.jar;c:\\seleniumplus\\libs\\JSTAFEmbedded.jar;c:\\seleniumplus\\libs\\selenium-server-standalone-3.4.0.jar";bin org.sas.VATest');
 
-insert into history (framework_id, engine_id, user_id, machine_id, timestamp, command_line) values (2, 3, 1, 2, '2018-02-22T09:35:15', '"c:\\seleniumplus\\Java\\jre\\bin\\java.exe"  -cp "c:\\seleniumplus\\libs\\seleniumplus.jar;c:\\seleniumplus\\libs\\JSTAFEmbedded.jar;c:\\seleniumplus\\libs\\selenium-server-standalone-3.4.0.jar";bin org.sas.VATest');
-
+insert into history_engine(history_id, engine_id) values (1, 3);
 
 insert into orderable(product_name, platform, track, branch) values ('Visual Analytic', 'Windows', '18w12', 'branchABC');
-
 
 insert into status(type, description) values ('0', 'GENERIC');
 insert into status(type, description) values ('7', 'DEBUG');

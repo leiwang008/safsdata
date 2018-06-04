@@ -72,17 +72,23 @@ create table if not exists engine (
 create table if not exists history (
 	id int not null auto_increment,
 	framework_id int,
-	engine_id int,
 	user_id varchar,
 	machine_id int,
-	timestamp datetime, /* it is when we collect the data, maybe in the driver or engine. */	
-	command_line varchar(500),
+	test_name varchar(255),
+	timestamp begin_timestamp, /* it is when we start the test, maybe in the driver or engine. */	
+	timestamp end_timestamp, /* it is when we stop the test, maybe in the driver or engine. */	
+	command_line longtext,
 	
 	primary key(id),
 	foreign key (framework_id) references framework(id),
-	foreign key (engine_id) references engine(id),
 	foreign key (user_id) references user(id),
 	foreign key (machine_id) references machine(id)
+);
+
+create table if not exists history_engine (
+	engine_id bigint not null,
+	history_id bigint not null,
+	primary key (engine_id, history_id)
 );
 
 /**

@@ -8,6 +8,7 @@
  *
  * History:
  * @date 2018-03-22    (Lei Wang) Initial release.
+ * @date 2018-06-04    (Lei Wang) HistoryEngine instead of History depends on me.
  */
 package org.safs.data.controller;
 
@@ -18,9 +19,9 @@ import java.util.Optional;
 
 import org.safs.data.exception.RestException;
 import org.safs.data.model.Engine;
-import org.safs.data.model.History;
+import org.safs.data.model.HistoryEngine;
 import org.safs.data.repository.EngineRepository;
-import org.safs.data.repository.HistoryRepository;
+import org.safs.data.repository.HistoryEngineRepository;
 import org.safs.data.resource.EngineResource;
 import org.safs.data.resource.EngineResourceAssembler;
 import org.slf4j.Logger;
@@ -54,7 +55,7 @@ public class EngineController implements Verifier<Engine>{
 	@Autowired
 	private EngineRepository engineRepository;
 	@Autowired
-	private HistoryRepository historyRepository;
+	private HistoryEngineRepository historyEngineRepository;
 
 	@Autowired
 	private EngineResourceAssembler assembler;
@@ -123,10 +124,10 @@ public class EngineController implements Verifier<Engine>{
 	@Override
 	public void verifyDependentsNotExist(Engine entity) throws RestException {
 		String me = entity.getClass().getName();
-		//'History' depends on me.
-		String dependent = History.class.getName();
-		if(!historyRepository.findAllByEngineId(entity.getId()).isEmpty()){
-			throw new RestException("Cannot delete "+me+" by id '"+entity.getId()+"', there are still "+dependent+"s depending on it!", HttpStatus.FAILED_DEPENDENCY);
+		//'HistoryEngine' depends on me.
+		String dependent = HistoryEngine.class.getName();
+		if(!historyEngineRepository.findAllByEngineId(entity.getId()).isEmpty()){
+			throw new RestException("There are still "+dependent+"s depending on "+me+" by id '"+entity.getId()+"'", HttpStatus.FAILED_DEPENDENCY);
 		}
 	}
 

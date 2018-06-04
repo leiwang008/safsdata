@@ -9,6 +9,7 @@
  * History:
  * @date 2018-03-22    (Lei Wang) Initial release.
  * @date 2018-04-04    (Lei Wang) Renamed method put() to create(); don't check id and always save it to database.
+ * @date 2018-06-04    (Lei Wang) Do not depend on Engine anymore; HistoryEngine depends on me.
  */
 package org.safs.data.controller;
 
@@ -18,12 +19,12 @@ import java.util.Optional;
 
 import org.apache.catalina.User;
 import org.safs.data.exception.RestException;
-import org.safs.data.model.Engine;
 import org.safs.data.model.Framework;
 import org.safs.data.model.History;
+import org.safs.data.model.HistoryEngine;
 import org.safs.data.model.Machine;
-import org.safs.data.repository.EngineRepository;
 import org.safs.data.repository.FrameworkRepository;
+import org.safs.data.repository.HistoryEngineRepository;
 import org.safs.data.repository.HistoryRepository;
 import org.safs.data.repository.MachineRepository;
 import org.safs.data.repository.UserRepository;
@@ -60,13 +61,13 @@ public class HistoryController implements Verifier<History>{
 	@Autowired
 	private HistoryRepository historyRepository;
 	@Autowired
+	private HistoryEngineRepository historyEngineRepository;
+	@Autowired
 	private MachineRepository machineRepository;
 	@Autowired
 	private UserRepository userRepository;
 	@Autowired
 	private FrameworkRepository framewordRepository;
-	@Autowired
-	private EngineRepository engineRepository;
 
 	@Autowired
 	private HistoryResourceAssembler assembler;
@@ -99,14 +100,23 @@ public class HistoryController implements Verifier<History>{
 	}
 
 	@DeleteMapping(value="{id}")
-	public ResponseEntity<HistoryResource> delete(@PathVariable Long id){
+	public ResponseEntity<HistoryResource> delete(@PathVariable Long id) throws RestException{
 		try{
 			verifyDependentsNotExist(historyRepository.findById(id).get());
-			historyRepository.deleteById(id);
-			return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
 		}catch(NoSuchElementException e){
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+		}catch(RestException re){
+			if(!HttpStatus.FAILED_DEPENDENCY.equals(re.getHttpStatus())){
+				throw re;
+			}
+			log.debug("Tried to delete dependent HistoryEngines by historyID '"+id+"'.");
+			if(!historyEngineRepository.deleteByHistoryId(id)){
+				throw new RestException("Cannot delete HistoryEngine by historyID '"+id+"'!", HttpStatus.FAILED_DEPENDENCY);
+			}
 		}
+
+		historyRepository.deleteById(id);
+		return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
 	}
 
 	@PutMapping(value="{id}")
@@ -125,7 +135,7 @@ public class HistoryController implements Verifier<History>{
 
 	@Override
 	public void verifyDependenciesExist(History entity) throws RestException {
-		//user, machine, framework and engine depend on me.
+		//I depend on user, machine and framework.
 		String me = entity.getClass().getName();
 		String dependency = null;
 		try{
@@ -146,17 +156,16 @@ public class HistoryController implements Verifier<History>{
 		}catch(NoSuchElementException e){
 			throw new RestException("Cannot find "+dependency+" by ID '"+entity.getFrameworkId()+"', so the "+me+" cannot be updated to refer to that "+dependency+".");
 		}
-		try{
-			dependency = Engine.class.getName();
-			engineRepository.findById(entity.getEngineId()).get();
-		}catch(NoSuchElementException e){
-			throw new RestException("Cannot find "+dependency+" by ID '"+entity.getEngineId()+"', so the "+me+" cannot be updated to refer to that "+dependency+".");
-		}
 	}
 
 	@Override
 	public void verifyDependentsNotExist(History entity) throws RestException {
-		//Nothing depends on History
+		String me = entity.getClass().getName();
+		//'HistoryEngine' depends on me.
+		String dependent = HistoryEngine.class.getName();
+		if(!historyEngineRepository.findAllByHistoryId(entity.getId()).isEmpty()){
+			throw new RestException("There are still "+dependent+"s depending on '"+me+"' "+" indentified by id '"+entity.getId()+"!", HttpStatus.FAILED_DEPENDENCY);
+		}
 	}
 
 }

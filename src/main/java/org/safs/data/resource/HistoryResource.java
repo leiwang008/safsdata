@@ -8,6 +8,7 @@
  *
  * History:
  * @date 2018-03-02    (Lei Wang) Initial release.
+ * @date 2018-06-04    (Lei Wang) Removed field 'engineId', 'timestamp'; Added fields 'testName', 'beginTimestamp' and 'endTimestamp'.
  */
 package org.safs.data.resource;
 
@@ -24,9 +25,10 @@ public class HistoryResource extends UpdatableDefaultForResource<History>{
 
 	private Long machineId;
 	private Long frameworkId;
-	private Long engineId;
 	private String userId;
-	private Date timestamp;
+	private String testName;
+	private Date beginTimestamp;
+	private Date endTimestamp;
 	private String commandLine;
 
 	public HistoryResource(History o){
@@ -55,24 +57,26 @@ public class HistoryResource extends UpdatableDefaultForResource<History>{
 	}
 
 	/**
-	 * @return the engineId
-	 */
-	public Long getEngineId() {
-		return engineId;
-	}
-
-	/**
 	 * @return the userId
 	 */
 	public String getUserId() {
 		return userId;
 	}
+	public String getTestName() {
+		return testName;
+	}
+	/**
+	 * @return the beginTimestamp
+	 */
+	public Date getBeginTimestamp() {
+		return beginTimestamp;
+	}
 
 	/**
-	 * @return the timestamp
+	 * @return the endTimestamp
 	 */
-	public Date getTimestamp() {
-		return timestamp;
+	public Date getEndTimestamp() {
+		return endTimestamp;
 	}
 
 	/**

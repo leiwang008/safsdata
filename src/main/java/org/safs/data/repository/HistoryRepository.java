@@ -8,6 +8,7 @@
  *
  * History:
  * @date 2018-03-02    (Lei Wang) Initial release.
+ * @date 2018-06-04    (Lei Wang) Removed the method related to 'engineId', which has been removed from the model.
  */
 package org.safs.data.repository;
 
@@ -30,12 +31,6 @@ public interface HistoryRepository extends CrudRepository<History, Long>{
 
 	@Query("select i from History i where i.frameworkId=:frameworkId")
 	public List<History> findAllByFrameworkId(@Param("frameworkId") Long frameworkId);
-
-	@Query("delete from History i where i.engineId=:engineId")
-	public boolean deleteByEngineId(@Param("engineId") Long engineId);
-
-	@Query("select i from History i where i.engineId=:engineId")
-	public List<History> findAllByEngineId(@Param("engineId") Long engineId);
 
 	@Query("delete from History i where i.userId=:userId")
 	public boolean deleteByUserId(@Param("userId") String userId);
