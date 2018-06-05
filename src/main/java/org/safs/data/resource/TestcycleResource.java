@@ -30,6 +30,12 @@ public class TestcycleResource extends UpdatableDefaultForResource<Testcycle>{
 	private double time;
 	private Date timestamp;
 
+	//The following fields are used to link with History table
+	private String testName;
+	private String user;
+	private String machine;
+	private String ip;
+
 	public TestcycleResource(Testcycle o){
 		update(o);
 	}
@@ -92,5 +98,33 @@ public class TestcycleResource extends UpdatableDefaultForResource<Testcycle>{
 	 */
 	public Date getTimestamp() {
 		return timestamp;
+	}
+
+	/**
+	 * @return the testName
+	 */
+	public String getTestName() {
+		return testName;
+	}
+
+	/**
+	 * @return the user
+	 */
+	public String getUser() {
+		return user;
+	}
+
+	/**
+	 * @return the machine
+	 */
+	public String getMachine() {
+		return machine;
+	}
+
+	/**
+	 * @return the ip
+	 */
+	public String getIp() {
+		return ip;
 	}
 }
